@@ -1,8 +1,7 @@
 import React from 'react';
 import {useCurrentFrame, useVideoConfig} from 'remotion';
-import {C, STROKE} from '../theme';
+import {C, STROKE, glow} from '../theme';
 import {pulse} from '../lib/anim';
-import {useWobble} from '../lib/wobble';
 import {Arm} from './parts/Arm';
 import {Legs, Torso} from './parts/Body';
 import {Face} from './parts/Face';
@@ -12,19 +11,18 @@ import type {CharacterSpec, Emotion, Pose, PoseSpec} from './types';
 
 /** Kol açıları: 0° aşağı, 90° yana, 180° yukarı. Önkol açısı üst kola göreli. */
 const POSES: Record<Pose, PoseSpec> = {
-  idle: {left: {upper: 13, fore: 9}, right: {upper: 13, fore: 9}},
-  handsDown: {left: {upper: 6, fore: 3}, right: {upper: 6, fore: 3}},
-  point: {left: {upper: 14, fore: 10}, right: {upper: 74, fore: 16}},
-  pointUp: {left: {upper: 14, fore: 10}, right: {upper: 152, fore: 14}},
-  wave: {left: {upper: 14, fore: 10}, right: {upper: 152, fore: -22}},
-  armsUp: {left: {upper: 156, fore: 16}, right: {upper: 156, fore: 16}},
-  shrug: {left: {upper: 56, fore: 72}, right: {upper: 56, fore: 72}},
-  thumbsUp: {left: {upper: 14, fore: 10}, right: {upper: 10, fore: 200}},
-  facepalm: {left: {upper: 16, fore: 12}, right: {upper: 132, fore: 104}},
-  // Göğüste kavuşan kollar: önkol açısı 180°'yi aşınca el gövdeye doğru döner.
-  // İki kol hafif farklı ki üst üste binip tek çizgi gibi görünmesinler.
-  crossed: {left: {upper: 22, fore: 232}, right: {upper: 18, fore: 244}},
-  presenting: {left: {upper: 16, fore: 12}, right: {upper: 80, fore: 20}},
+  idle: {left: {upper: 10, fore: 8}, right: {upper: 10, fore: 8}},
+  handsDown: {left: {upper: 5, fore: 3}, right: {upper: 5, fore: 3}},
+  point: {left: {upper: 12, fore: 9}, right: {upper: 58, fore: 38}},
+  pointUp: {left: {upper: 12, fore: 9}, right: {upper: 150, fore: 14}},
+  wave: {left: {upper: 12, fore: 9}, right: {upper: 150, fore: -22}},
+  armsUp: {left: {upper: 152, fore: 16}, right: {upper: 152, fore: 16}},
+  shrug: {left: {upper: 52, fore: 70}, right: {upper: 52, fore: 70}},
+  thumbsUp: {left: {upper: 12, fore: 9}, right: {upper: 10, fore: 200}},
+  facepalm: {left: {upper: 14, fore: 11}, right: {upper: 132, fore: 104}},
+  // Göğüste kavuşan kollar; iki kol hafif farklı ki tek çizgi gibi durmasın
+  crossed: {left: {upper: 34, fore: 226}, right: {upper: 20, fore: 248}},
+  presenting: {left: {upper: 14, fore: 11}, right: {upper: 60, fore: 36}},
 };
 
 export type CharacterProps = {
@@ -34,19 +32,19 @@ export type CharacterProps = {
   /** Kareye basılacak yükseklik (px). Genişlik oranla hesaplanır. */
   readonly height: number;
   readonly talking?: boolean;
-  /** true ise karakter sola bakar. */
   readonly flip?: boolean;
-  /** Poz açılarını elle ezmek için. */
   readonly arms?: Partial<PoseSpec>;
-  /** Heyecan seviyesi: zıplama ve sallanma miktarını artırır. 0–1. */
+  /** Heyecan seviyesi: salınım ve zıplamayı artırır. 0–1. */
   readonly energy?: number;
   /** Kadraj. 'head' ve 'bust' duygusal anlarda yakın plan için. */
   readonly crop?: 'full' | 'bust' | 'head';
+  /** Kenar ışığı şiddeti. 0 = kapalı. */
+  readonly rim?: number;
   readonly style?: React.CSSProperties;
 };
 
 const VB_W = 400;
-const VB_H = 760;
+const VB_H = 800;
 
 export const Character: React.FC<CharacterProps> = ({
   spec,
@@ -58,11 +56,11 @@ export const Character: React.FC<CharacterProps> = ({
   arms,
   energy = 0,
   crop = 'full',
+  rim = 1,
   style,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const wob = useWobble(`char-${spec.id}`, 1.5, 3);
 
   const sk = skeleton(spec);
   const base = POSES[pose];
@@ -71,32 +69,30 @@ export const Character: React.FC<CharacterProps> = ({
     right: {...base.right, ...arms?.right},
   };
 
-  // Nefes alma — gövde çok hafif uzayıp kısalır
-  const breath = pulse(frame, fps, 0.42) * 0.012;
-  // Heyecanlandıkça artan zıplama
-  const hop = energy > 0 ? Math.abs(pulse(frame, fps, 1.6)) * -14 * energy : 0;
-  // Baş, gövdeden hafif gecikmeli sallanır
-  const headSway = pulse(frame, fps, 0.42, -0.6) * (2.4 + energy * 5);
-  const headTilt = pulse(frame, fps, 0.3, 1.1) * (1.2 + energy * 2.5);
+  // Nefes — gövde çok hafif uzayıp kısalır
+  const breath = pulse(frame, fps, 0.36) * 0.008;
+  // Heyecanlandıkça artan ağırlık aktarımı (zıplama değil — daha ağırbaşlı)
+  const sway = pulse(frame, fps, 0.9) * energy * 5;
+  const headSway = pulse(frame, fps, 0.36, -0.6) * (1.4 + energy * 2.6);
+  const headTilt = pulse(frame, fps, 0.26, 1.1) * (0.7 + energy * 1.4);
 
-  const upperLen = spec.torsoLength * 0.46;
-  const foreLen = spec.torsoLength * 0.42;
-  // Omuz noktası gövdenin İÇİNDE: kol dışarı çıkarken tişörtten uzuyormuş gibi görünür
-  const shoulderL = sk.centerX - spec.shoulderWidth * 0.64;
-  const shoulderR = sk.centerX + spec.shoulderWidth * 0.64;
-  const shoulderY = sk.shoulderY + 34;
+  const upperLen = spec.torsoLength * 0.47;
+  const foreLen = spec.torsoLength * 0.45;
+  const shoulderL = sk.centerX - spec.shoulderWidth * 0.62;
+  const shoulderR = sk.centerX + spec.shoulderWidth * 0.62;
+  const shoulderY = sk.shoulderY + 26;
 
   // Kadraja göre viewBox — aynı rig, farklı çekim ölçeği
   const view = (() => {
     if (crop === 'head') {
-      const top = sk.headCy - spec.headRy - 58;
-      const h = spec.headRy * 2 + 108;
+      const top = sk.headCy - spec.headRy - 42;
+      const h = spec.headRy * 2 + 86;
       return {x: sk.centerX - h / 2, y: top, w: h, h};
     }
     if (crop === 'bust') {
-      const top = sk.headCy - spec.headRy - 58;
-      const h = sk.hipY - top - 30;
-      return {x: sk.centerX - (h * 0.82) / 2, y: top, w: h * 0.82, h};
+      const top = sk.headCy - spec.headRy - 42;
+      const h = sk.hipY - top + 10;
+      return {x: sk.centerX - (h * 0.8) / 2, y: top, w: h * 0.8, h};
     }
     return {x: 0, y: 0, w: VB_W, h: VB_H};
   })();
@@ -114,7 +110,7 @@ export const Character: React.FC<CharacterProps> = ({
     <div
       style={{
         ...style,
-        transform: `${style?.transform ?? ''} translate(${wob.x}px, ${wob.y + hop}px) rotate(${wob.rotate}deg)`,
+        transform: `${style?.transform ?? ''} translateX(${sway}px)`,
       }}
     >
       <svg
@@ -124,17 +120,39 @@ export const Character: React.FC<CharacterProps> = ({
         style={{
           overflow: crop === 'full' ? 'visible' : 'hidden',
           transform: flip ? 'scaleX(-1)' : undefined,
+          filter: rim > 0 ? glow(spec.accent, 0.42 * rim) : undefined,
         }}
       >
-        {/* Zemin gölgesi */}
+        <defs>
+          {/* Işık üstten ve hafif sağdan: gradyanlar bu yöne göre kurulu */}
+          <linearGradient id={`jacket-${spec.id}`} x1="10%" y1="0%" x2="86%" y2="100%">
+            <stop offset="0%" stopColor={spec.jacketLit} />
+            <stop offset="30%" stopColor={spec.jacket} />
+            <stop offset="72%" stopColor={spec.jacketShade} />
+            <stop offset="100%" stopColor="#05080F" />
+          </linearGradient>
+          <linearGradient id={`pants-${spec.id}`} x1="20%" y1="0%" x2="80%" y2="100%">
+            <stop offset="0%" stopColor={spec.jacket} />
+            <stop offset="100%" stopColor={spec.pants} />
+          </linearGradient>
+          <linearGradient id={`skin-${spec.id}`} x1="14%" y1="2%" x2="78%" y2="98%">
+            <stop offset="0%" stopColor={spec.skinLit} />
+            <stop offset="34%" stopColor={spec.skin} />
+            <stop offset="78%" stopColor={spec.skinShade} />
+            <stop offset="100%" stopColor="#5C3B28" />
+          </linearGradient>
+        </defs>
+
+        {/* Zemin teması — gölge değil, aksan renginde bir ışık havuzu */}
         <ellipse
           cx={sk.centerX}
-          cy={sk.groundY + 14}
-          rx={spec.shoulderWidth * 1.5}
-          ry={13}
-          fill={C.ink}
-          opacity={0.22}
+          cy={sk.groundY + 8}
+          rx={spec.shoulderWidth * 1.7}
+          ry={9}
+          fill={spec.accent}
+          opacity={0.2}
         />
+        <ellipse cx={sk.centerX} cy={sk.groundY + 8} rx={spec.shoulderWidth * 0.9} ry={5} fill={spec.accent} opacity={0.32} />
 
         <Legs {...bodyProps} />
 
@@ -142,56 +160,50 @@ export const Character: React.FC<CharacterProps> = ({
           <Torso {...bodyProps} />
         </g>
 
-        {/* Kollar gövdeden sonra çizilir: omuz noktası tişörtün içinde kaldığı
-            için kol, gövdeden uzuyormuş gibi görünür — kopuk durmaz. */}
-        <Arm
-          spec={spec}
-          side="left"
-          shoulderX={shoulderL}
-          shoulderY={shoulderY}
-          angles={angles.left}
-          upperLen={upperLen}
-          foreLen={foreLen}
-        />
-        <Arm
-          spec={spec}
-          side="right"
-          shoulderX={shoulderR}
-          shoulderY={shoulderY}
-          angles={angles.right}
-          upperLen={upperLen}
-          foreLen={foreLen}
-        />
+        {/* Kollar gövdeden sonra: omuz noktası ceketin içinde kaldığı için
+            kol gövdeden uzuyormuş gibi görünür, kopuk durmaz. */}
+        <Arm spec={spec} side="left" shoulderX={shoulderL} shoulderY={shoulderY} angles={angles.left} upperLen={upperLen} foreLen={foreLen} />
+        <Arm spec={spec} side="right" shoulderX={shoulderR} shoulderY={shoulderY} angles={angles.right} upperLen={upperLen} foreLen={foreLen} />
 
-        {/* Kafa — gövdeden bağımsız sallanır */}
-        <g
-          transform={`translate(${headSway}, ${-breath * 40}) rotate(${headTilt}, ${sk.centerX}, ${sk.headCy + spec.headRy})`}
-        >
+        {/* Kafa — gövdeden bağımsız, gecikmeli salınır */}
+        <g transform={`translate(${headSway}, ${-breath * 30}) rotate(${headTilt}, ${sk.centerX}, ${sk.headCy + spec.headRy})`}>
           <HairBack spec={spec} cx={sk.centerX} cy={sk.headCy} />
 
           {/* Kulaklar */}
           {[-1, 1].map((side) => (
             <ellipse
               key={side}
-              cx={sk.centerX + side * (spec.headRx + 2)}
-              cy={sk.headCy + 6}
-              rx={11}
-              ry={15}
-              fill={spec.skin}
-              stroke={C.ink}
+              cx={sk.centerX + side * (spec.headRx + 1)}
+              cy={sk.headCy + spec.headRy * 0.1}
+              rx={6}
+              ry={9}
+              fill={spec.skinShade}
+              stroke={C.line}
               strokeWidth={STROKE.thin}
             />
           ))}
 
-          {/* Yüz ovali */}
-          <ellipse
-            cx={sk.centerX}
-            cy={sk.headCy}
-            rx={spec.headRx}
-            ry={spec.headRy}
-            fill={spec.skin}
-            stroke={C.ink}
-            strokeWidth={STROKE.thick}
+          {/* Yüz — daire değil, çeneye doğru daralan bir oval */}
+          <path
+            d={`M ${sk.centerX} ${sk.headCy - spec.headRy}
+                C ${sk.centerX + spec.headRx * 1.06} ${sk.headCy - spec.headRy * 0.88} ${sk.centerX + spec.headRx * 1.04} ${sk.headCy + spec.headRy * 0.26} ${sk.centerX + spec.headRx * 0.78} ${sk.headCy + spec.headRy * 0.66}
+                C ${sk.centerX + spec.headRx * 0.46} ${sk.headCy + spec.headRy * 1.02} ${sk.centerX - spec.headRx * 0.46} ${sk.headCy + spec.headRy * 1.02} ${sk.centerX - spec.headRx * 0.78} ${sk.headCy + spec.headRy * 0.66}
+                C ${sk.centerX - spec.headRx * 1.04} ${sk.headCy + spec.headRy * 0.26} ${sk.centerX - spec.headRx * 1.06} ${sk.headCy - spec.headRy * 0.88} ${sk.centerX} ${sk.headCy - spec.headRy} Z`}
+            fill={`url(#skin-${spec.id})`}
+            stroke={C.line}
+            strokeWidth={STROKE.normal}
+            strokeLinejoin="round"
+          />
+
+          {/* Kafanın sol konturunda kenar ışığı */}
+          <path
+            d={`M ${sk.centerX - spec.headRx * 0.2} ${sk.headCy - spec.headRy * 0.99}
+                C ${sk.centerX - spec.headRx * 0.9} ${sk.headCy - spec.headRy * 0.86} ${sk.centerX - spec.headRx * 1.04} ${sk.headCy + spec.headRy * 0.26} ${sk.centerX - spec.headRx * 0.78} ${sk.headCy + spec.headRy * 0.66}`}
+            fill="none"
+            stroke={spec.accent}
+            strokeWidth={2.6}
+            strokeLinecap="round"
+            opacity={0.62}
           />
 
           <Face spec={spec} emotion={emotion} talking={talking} cx={sk.centerX} cy={sk.headCy} />

@@ -47,6 +47,22 @@ Sahne sıralamasını ve zamanlamayı görmek için:
 npm run timeline
 ```
 
+## Görsel dil
+
+Sinematik sci-fi. Karikatür değil — kalın siyah kontur ve doygun düz renk yok.
+
+- **Aydınlatma:** ana ışık soldan arkadan. Gövdeler büyük ölçüde gölgede kalır,
+  sol kontur boyunca aksan renginde keskin bir kenar ışığı çizilir. Formu
+  tanımlayan şey çizgi değil, ışık.
+- **Mekân:** ufka yakınsayan zemin ızgarası, ışık huzmeleri, derinlik katmanlı
+  parçacıklar. Her sahne bir mekânın içinde geçiyor gibi durur.
+- **Kamera:** hiçbir sahne sabit değil. Yavaş push-in / drift + çok hafif el
+  kamerası salınımı. Sabit kadraj bir videoyu anında ucuz gösterir.
+- **Objektif katmanı:** vinyet, film greni, tarama çizgileri, bloom. Sahnelerin
+  üstünde durur ve kamerayla birlikte hareket etmez.
+- **Tipografi:** Chakra Petch (başlık, geniş harf aralığı, büyük harf),
+  Barlow (gövde), JetBrains Mono (sayılar, HUD okumaları, kicker'lar).
+
 ## Karakterler
 
 | | A | B |
@@ -54,8 +70,12 @@ npm run timeline
 | Boy | Uzun | A'dan ~%12 kısa |
 | Saç | Sarı, normal uzunlukta dağınık | Siyah, kısa |
 | Göz | Mavi | Siyah |
-| Tişört | Mavi | Kırmızı |
-| Rolü | Futures / spot trading | Airdrop / on-chain / yeni projeler |
+| Aksan rengi | Camgöbeği | Kehribar |
+| Rolü | **Airdrop · yeni projeler · on-chain araştırma** | **Futures · spot trading · strateji** |
+
+Oranlar ~6.5 kafa boyu (yetişkin figür), ince konturlar, gradyanla hacim,
+teknik parka. Yakın planda yüz hatları okunur; geniş planda siluet ve
+kenar ışığı taşır — gerçek animasyonun çalışma biçimi.
 
 Tanımları `src/characters/presets.ts` içinde. Renk, boy, saç stili — hepsi tek yerden değişir.
 
@@ -65,7 +85,9 @@ Tanımları `src/characters/presets.ts` içinde. Renk, boy, saç stili — hepsi
 
 **Kadrajlar:** `full` (tam boy) · `bust` (bel üstü) · `head` (yakın plan)
 
-Karakterler sürekli canlı: nefes alır, göz kırpar, `talking` verildiğinde ağız oynar, `energy` verildiğinde zıplar. Konturlarda hafif bir titreme var — gerçek çizgi filmdeki "kaynama" efektinin taklidi.
+Karakterler sürekli canlı: nefes alır, göz kırpar, `talking` verildiğinde ağız
+oynar, `energy` verildiğinde ağırlık aktarır. Konuşma ağzı duyguya duyarlı —
+üzgün bir yüzde ağız çok daha az açılır, yoksa "bağırıyor" gibi okunur.
 
 Hepsini bir arada görmek için Studio'da **`DevCharacterSheet`** kompozisyonunu aç.
 
@@ -103,18 +125,25 @@ src/
     Character.tsx         Ana karakter bileşeni (poz, duygu, kadraj)
     parts/                Yüz, saç, gövde, kol
 
+  effects/
+    Grade.tsx             Vinyet, gren, tarama çizgileri, bloom, lens flare
+  lib/
+    camera.tsx            Sahne kamerası (push-in, drift, el kamerası)
+
   scenes/
-    Stage.tsx             Arka plan tonları ve başlık
+    Stage.tsx             Mekân: ızgara, huzmeler, parçacıklar + başlık
     layouts.tsx           7 sahne düzeni (TitleCard, Duo, Solo, ListReveal,
                           Spotlight, Split, CloseUp)
 
   props/
-    Crypto.tsx            Mum grafiği, coin, blok zinciri, paraşüt, roket
-    Ui.tsx                Konuşma balonu, para çuvalı, büyüteç, dünya,
-                          soru işaretleri, ekran, like/subscribe, konfeti
-    Story.tsx             Buzdağı, yasak işareti, kalkan, sayaç, yorumlar
+    Crypto.tsx            Holo mum grafiği, coin, blok zinciri, kapsül, roket
+    SciFi.tsx             HUD çerçevesi, holo panel, veri akışı, tel kafes
+                          dünya, radar, fiyat şeridi, düğüm ağı
+    Ui.tsx                Diyalog kutusu, kasa, tarayıcı, soru glifleri,
+                          like/subscribe, kıvılcım patlaması
+    Story.tsx             Buzdağı, red damgası, kalkan, sayaç, yorumlar
 
-public/fonts/             Fredoka + Nunito (yerel — render internet istemez)
+public/fonts/             Chakra Petch + Barlow + JetBrains Mono (yerel)
 out/                      Çıktılar (git'e dahil değil)
 ```
 
@@ -141,7 +170,8 @@ Her şey `src/script/beats.tsx` içinde. Bir beat şöyle görünür:
 
 - `script` → anlatım metni; süre buradan gelir
 - `caption` → ekranda görünen kısa yazı
-- `mood` → arka plan tonu: `night` `warm` `chart` `danger` `gold` `calm`
+- `mood` → arka plan tonu: `void` `data` `risk` `wealth` `deep` `dawn`
+- `move` → kamera hareketi: `pushIn` `pullOut` `driftLeft` `driftRight` `riseUp` `sinkDown` `still`
 - `a` / `b` → karakterlerin o sahnedeki hâli
 
 Kaydedince Studio anında güncellenir.
@@ -179,7 +209,7 @@ Geliştirme sırasında tüm videoyu render alma — Studio'da bak, sadece üzer
 
 ## Notlar
 
-- Fontlar (Fredoka, Nunito) `public/fonts/` altında yerel — render internet gerektirmez, sonuç her makinede aynı.
+- Fontlar `public/fonts/` altında yerel — render internet gerektirmez, sonuç her makinede aynı.
 - Tüm görseller kod ile çizilmiş SVG. Dışarıdan stok görsel/Lottie yok, dolayısıyla **lisans sorunu yok** — ticari kullanım, monetizasyon serbest.
 - Sahne geçişleri bilinçli olarak sert kesim; yumuşak geçişi Premiere'de eklemek daha esnek.
 - Remotion'un kendi lisansı ayrı: bireysel ve küçük ekipler için ücretsiz, büyük şirketler için ücretli. <https://www.remotion.dev/license>

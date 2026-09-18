@@ -12,12 +12,12 @@ type Props = {
   readonly foreLen: number;
 };
 
-const ARM_W = 21;
+const ARM_W = 17;
 
 /**
  * İki eklemli kol: omuz → dirsek → el.
- * Açılar derece cinsinden; 0° aşağı, 90° yana, 180° yukarı.
- * Önkol açısı üst kola görelidir, yani gerçek bir eklem gibi davranır.
+ * Açılar derece; 0° aşağı, 90° yana, 180° yukarı. Önkol açısı üst kola göreli.
+ * Kolun üst yarısı ceket kolu (koyu), alt yarısı ten.
  */
 export const Arm: React.FC<Props> = ({spec, side, shoulderX, shoulderY, angles, upperLen, foreLen}) => {
   const dir = side === 'left' ? -1 : 1;
@@ -30,35 +30,59 @@ export const Arm: React.FC<Props> = ({spec, side, shoulderX, shoulderY, angles, 
   const handX = elbowX + dir * Math.sin(a2) * foreLen;
   const handY = elbowY + Math.cos(a2) * foreLen;
 
-  // Omuzdan dirseğe doğru kısa bir tişört kolu
-  const sleeveX = shoulderX + (elbowX - shoulderX) * 0.5;
-  const sleeveY = shoulderY + (elbowY - shoulderY) * 0.5;
-
-  const limb = `M ${shoulderX} ${shoulderY} L ${elbowX} ${elbowY} L ${handX} ${handY}`;
+  // Ceket kolu dirseğin biraz ötesine kadar iner
+  const cuffX = elbowX + (handX - elbowX) * 0.34;
+  const cuffY = elbowY + (handY - elbowY) * 0.34;
 
   return (
     <g>
-      {/* Kontur */}
-      <path d={limb} fill="none" stroke={C.ink} strokeWidth={ARM_W + 7} strokeLinecap="round" strokeLinejoin="round" />
-      {/* Ten */}
-      <path d={limb} fill="none" stroke={spec.skin} strokeWidth={ARM_W} strokeLinecap="round" strokeLinejoin="round" />
-      {/* Tişört kolu */}
+      {/* Önkol — ten */}
       <path
-        d={`M ${shoulderX} ${shoulderY} L ${sleeveX} ${sleeveY}`}
+        d={`M ${elbowX} ${elbowY} L ${handX} ${handY}`}
         fill="none"
-        stroke={C.ink}
-        strokeWidth={ARM_W + 15}
+        stroke={C.line}
+        strokeWidth={ARM_W + 3}
         strokeLinecap="round"
       />
       <path
-        d={`M ${shoulderX} ${shoulderY} L ${sleeveX} ${sleeveY}`}
+        d={`M ${elbowX} ${elbowY} L ${handX} ${handY}`}
         fill="none"
-        stroke={spec.shirt}
+        stroke={spec.skin}
+        strokeWidth={ARM_W - 1}
+        strokeLinecap="round"
+      />
+
+      {/* Üst kol — ceket */}
+      <path
+        d={`M ${shoulderX} ${shoulderY} L ${elbowX} ${elbowY} L ${cuffX} ${cuffY}`}
+        fill="none"
+        stroke={C.line}
         strokeWidth={ARM_W + 8}
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
+      <path
+        d={`M ${shoulderX} ${shoulderY} L ${elbowX} ${elbowY} L ${cuffX} ${cuffY}`}
+        fill="none"
+        stroke={spec.jacket}
+        strokeWidth={ARM_W + 4}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Kol üzerinde ince aksan şeridi */}
+      <path
+        d={`M ${shoulderX} ${shoulderY} L ${elbowX} ${elbowY}`}
+        fill="none"
+        stroke={spec.accent}
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        opacity={0.55}
+      />
+      {/* Bilek bandı */}
+      <circle cx={cuffX} cy={cuffY} r={ARM_W * 0.62} fill={spec.jacketShade} stroke={spec.accent} strokeWidth={1.6} />
+
       {/* El */}
-      <circle cx={handX} cy={handY} r={16} fill={spec.skin} stroke={C.ink} strokeWidth={STROKE.thin} />
+      <circle cx={handX} cy={handY} r={10.5} fill={spec.skin} stroke={C.line} strokeWidth={STROKE.thin} />
     </g>
   );
 };

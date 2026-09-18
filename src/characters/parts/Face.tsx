@@ -1,21 +1,13 @@
 import React from 'react';
 import {random, useCurrentFrame} from 'remotion';
-import {C, STROKE} from '../../theme';
+import {C} from '../../theme';
 import type {CharacterSpec, Emotion} from '../types';
 
-type MouthShape =
-  | 'smile'
-  | 'bigSmile'
-  | 'flat'
-  | 'frown'
-  | 'smirk'
-  | 'wavy'
-  | 'o'
-  | 'grit';
+type MouthShape = 'line' | 'smile' | 'grin' | 'frown' | 'smirk' | 'wavy' | 'open' | 'tight';
 
 type FaceSpec = {
   browY: number;
-  /** + değer: kaşın iç ucu yukarı (üzgün/endişeli). − değer: iç uç aşağı (kararlı/öfkeli). */
+  /** + : kaşın iç ucu yukarı (üzgün). − : iç uç aşağı (kararlı/öfkeli). */
   browTilt: number;
   eyeOpen: number;
   eyeWide: number;
@@ -25,19 +17,21 @@ type FaceSpec = {
 };
 
 const FACES: Record<Emotion, FaceSpec> = {
-  neutral: {browY: 0, browTilt: 0, eyeOpen: 1, eyeWide: 1, mouth: 'smile', pupilX: 0, pupilY: 0},
-  happy: {browY: -3, browTilt: 4, eyeOpen: 0.86, eyeWide: 1, mouth: 'bigSmile', pupilX: 0, pupilY: 1},
-  excited: {browY: -9, browTilt: 6, eyeOpen: 1.22, eyeWide: 1.08, mouth: 'bigSmile', pupilX: 0, pupilY: -1},
-  laughing: {browY: -5, browTilt: 7, eyeOpen: 0.18, eyeWide: 1.05, mouth: 'bigSmile', pupilX: 0, pupilY: 0},
-  confident: {browY: 1, browTilt: -7, eyeOpen: 0.82, eyeWide: 1, mouth: 'smirk', pupilX: 2, pupilY: 0},
-  thinking: {browY: -2, browTilt: -4, eyeOpen: 0.9, eyeWide: 1, mouth: 'wavy', pupilX: 6, pupilY: -6},
-  worried: {browY: -5, browTilt: 13, eyeOpen: 1.06, eyeWide: 1, mouth: 'wavy', pupilX: 0, pupilY: 2},
-  sad: {browY: -1, browTilt: 16, eyeOpen: 0.78, eyeWide: 1, mouth: 'frown', pupilX: 0, pupilY: 4},
-  shocked: {browY: -14, browTilt: 8, eyeOpen: 1.4, eyeWide: 1.14, mouth: 'o', pupilX: 0, pupilY: 0},
-  defeated: {browY: 2, browTilt: 15, eyeOpen: 0.3, eyeWide: 1, mouth: 'flat', pupilX: 0, pupilY: 3},
+  neutral: {browY: 0, browTilt: 0, eyeOpen: 1, eyeWide: 1, mouth: 'line', pupilX: 0, pupilY: 0},
+  happy: {browY: -2, browTilt: 3, eyeOpen: 0.88, eyeWide: 1, mouth: 'smile', pupilX: 0, pupilY: 0.4},
+  excited: {browY: -6, browTilt: 5, eyeOpen: 1.18, eyeWide: 1.05, mouth: 'grin', pupilX: 0, pupilY: -0.4},
+  laughing: {browY: -3, browTilt: 6, eyeOpen: 0.16, eyeWide: 1.04, mouth: 'grin', pupilX: 0, pupilY: 0},
+  confident: {browY: 1, browTilt: -8, eyeOpen: 0.82, eyeWide: 1, mouth: 'smirk', pupilX: 1, pupilY: 0},
+  thinking: {browY: -1, browTilt: -5, eyeOpen: 0.9, eyeWide: 1, mouth: 'wavy', pupilX: 2.6, pupilY: -2.4},
+  worried: {browY: -4, browTilt: 14, eyeOpen: 1.04, eyeWide: 1, mouth: 'wavy', pupilX: 0, pupilY: 1},
+  sad: {browY: -1, browTilt: 17, eyeOpen: 0.76, eyeWide: 1, mouth: 'frown', pupilX: 0, pupilY: 1.6},
+  shocked: {browY: -10, browTilt: 7, eyeOpen: 1.35, eyeWide: 1.1, mouth: 'open', pupilX: 0, pupilY: 0},
+  defeated: {browY: 2, browTilt: 16, eyeOpen: 0.3, eyeWide: 1, mouth: 'tight', pupilX: 0, pupilY: 1.4},
 };
 
-/** Deterministik göz kırpma: her karakterin kendi ritmi var, render tekrarlanabilir. */
+const SUBDUED: ReadonlySet<Emotion> = new Set(['sad', 'worried', 'defeated', 'thinking']);
+
+/** Deterministik göz kırpma — her karakterin kendi ritmi, render tekrarlanabilir. */
 const useBlink = (seed: string) => {
   const frame = useCurrentFrame();
   const CYCLE = 84;
@@ -47,40 +41,13 @@ const useBlink = (seed: string) => {
   return Math.min(1, Math.abs(t - 3) / 3);
 };
 
-/**
- * Konuşurken ağzın açılma miktarı — jenerik bir gevezelik ritmi.
- * Olumsuz duygularda ağız çok daha az açılır: yoksa üzgün bir yüzde
- * kocaman açık ağız "bağırıyor / seviniyor" gibi okunuyor.
- */
-const SUBDUED: ReadonlySet<Emotion> = new Set(['sad', 'worried', 'defeated', 'thinking']);
-
+/** Konuşurken ağzın açılma miktarı. Olumsuz duygularda çok daha kısık. */
 const useTalk = (seed: string, talking: boolean, emotion: Emotion) => {
   const frame = useCurrentFrame();
   if (!talking) return 0;
   const tick = Math.floor(frame / 3);
-  const raw = 0.28 + 0.72 * random(`talk-${seed}-${tick}`);
-  return SUBDUED.has(emotion) ? raw * 0.4 : raw;
-};
-
-const mouthPath = (shape: MouthShape): {d: string; filled: boolean} => {
-  switch (shape) {
-    case 'smile':
-      return {d: 'M -26 -2 Q 0 22 26 -2', filled: false};
-    case 'bigSmile':
-      return {d: 'M -32 -4 Q 0 -12 32 -4 Q 28 34 0 36 Q -28 34 -32 -4 Z', filled: true};
-    case 'flat':
-      return {d: 'M -22 4 L 22 4', filled: false};
-    case 'frown':
-      return {d: 'M -24 12 Q 0 -12 24 12', filled: false};
-    case 'smirk':
-      return {d: 'M -24 6 Q 6 20 28 -6', filled: false};
-    case 'wavy':
-      return {d: 'M -26 4 Q -13 -8 0 3 Q 13 14 26 0', filled: false};
-    case 'o':
-      return {d: 'M 0 -14 Q 18 -14 18 6 Q 18 26 0 26 Q -18 26 -18 6 Q -18 -14 0 -14 Z', filled: true};
-    case 'grit':
-      return {d: 'M -26 -8 L 26 -8 L 26 14 L -26 14 Z', filled: true};
-  }
+  const raw = 0.3 + 0.7 * random(`talk-${seed}-${tick}`);
+  return SUBDUED.has(emotion) ? raw * 0.42 : raw;
 };
 
 export const Face: React.FC<{
@@ -95,34 +62,79 @@ export const Face: React.FC<{
   const talk = useTalk(spec.id, talking, emotion);
   const subdued = SUBDUED.has(emotion);
 
-  const eyeDx = spec.headRx * 0.38;
-  const eyeY = cy - 6;
-  const browBaseY = eyeY - 34 + f.browY;
-  const mouthY = cy + spec.headRy * 0.46;
+  const rx = spec.headRx;
+  const ry = spec.headRy;
+
+  // Yüz hatları kafa ölçüsüne oranlı — kadraj değişse de bozulmaz
+  const eyeDx = rx * 0.42;
+  const eyeY = cy - ry * 0.04;
+  const eyeRx = rx * 0.2;
+  const eyeRy = ry * 0.145;
+  const browY = eyeY - ry * 0.3 + f.browY * 0.5;
+  const mouthY = cy + ry * 0.5;
+  const mw = rx * 0.34;
 
   const openness = f.eyeOpen * blink;
-  const mouth = mouthPath(f.mouth);
+
+  const mouthPath = (): {d: string; fill: boolean} => {
+    switch (f.mouth) {
+      case 'line':
+        return {d: `M ${-mw * 0.7} 0 L ${mw * 0.7} 0`, fill: false};
+      case 'smile':
+        return {d: `M ${-mw} -1 Q 0 ${mw * 0.62} ${mw} -1`, fill: false};
+      case 'grin':
+        return {d: `M ${-mw} -2 Q 0 -${mw * 0.2} ${mw} -2 Q ${mw * 0.8} ${mw} 0 ${mw * 1.06} Q ${-mw * 0.8} ${mw} ${-mw} -2 Z`, fill: true};
+      case 'frown':
+        return {d: `M ${-mw * 0.9} ${mw * 0.4} Q 0 -${mw * 0.45} ${mw * 0.9} ${mw * 0.4}`, fill: false};
+      case 'smirk':
+        return {d: `M ${-mw * 0.85} ${mw * 0.2} Q ${mw * 0.2} ${mw * 0.6} ${mw} -${mw * 0.3}`, fill: false};
+      case 'wavy':
+        return {d: `M ${-mw * 0.9} ${mw * 0.1} Q ${-mw * 0.45} -${mw * 0.3} 0 ${mw * 0.1} Q ${mw * 0.45} ${mw * 0.5} ${mw * 0.9} 0`, fill: false};
+      case 'open':
+        return {d: `M 0 -${mw * 0.5} Q ${mw * 0.62} -${mw * 0.5} ${mw * 0.62} ${mw * 0.25} Q ${mw * 0.62} ${mw} 0 ${mw} Q -${mw * 0.62} ${mw} -${mw * 0.62} ${mw * 0.25} Q -${mw * 0.62} -${mw * 0.5} 0 -${mw * 0.5} Z`, fill: true};
+      case 'tight':
+        return {d: `M ${-mw * 0.62} 0 Q 0 ${mw * 0.16} ${mw * 0.62} 0`, fill: false};
+    }
+  };
+
+  const mouth = mouthPath();
 
   return (
     <g>
+      {/* Göz çukuru gölgesi — yüze derinlik verir */}
+      {[-1, 1].map((side) => (
+        <ellipse
+          key={`socket-${side}`}
+          cx={cx + side * eyeDx}
+          cy={eyeY}
+          rx={eyeRx * 1.5}
+          ry={eyeRy * 1.7}
+          fill={spec.skinShade}
+          opacity={0.32}
+        />
+      ))}
+
       {/* Gözler */}
       {[-1, 1].map((side) => (
         <g key={side} transform={`translate(${cx + side * eyeDx}, ${eyeY})`}>
-          {openness < 0.14 ? (
-            // Neredeyse kapalı: tek bir kavisli çizgi çok daha okunaklı
+          {openness < 0.16 ? (
             <path
-              d="M -17 0 Q 0 8 17 0"
+              d={`M ${-eyeRx} 0 Q 0 ${eyeRy * 0.7} ${eyeRx} 0`}
               fill="none"
-              stroke={C.ink}
-              strokeWidth={STROKE.normal}
+              stroke={C.line}
+              strokeWidth={2.2}
               strokeLinecap="round"
             />
           ) : (
             <g transform={`scale(${f.eyeWide}, ${openness})`}>
-              <ellipse rx={18} ry={20} fill={C.white} stroke={C.ink} strokeWidth={STROKE.thin} />
-              <circle cx={f.pupilX} cy={f.pupilY} r={10.5} fill={spec.eye} />
-              <circle cx={f.pupilX} cy={f.pupilY} r={5.5} fill={C.ink} />
-              <circle cx={f.pupilX - 4.5} cy={f.pupilY - 5.5} r={3.6} fill={C.white} />
+              <ellipse rx={eyeRx} ry={eyeRy} fill="#F2F6FF" />
+              <circle cx={f.pupilX} cy={f.pupilY} r={eyeRx * 0.62} fill={spec.eye} />
+              <circle cx={f.pupilX} cy={f.pupilY} r={eyeRx * 0.3} fill="#0A0E18" />
+              {/* Işık yansıması — aksan renginde, teknoloji hissi */}
+              <circle cx={f.pupilX - eyeRx * 0.28} cy={f.pupilY - eyeRy * 0.36} r={eyeRx * 0.22} fill={spec.eyeGlow} opacity={0.8} />
+              {/* Üst göz kapağı gölgesi */}
+              <path d={`M ${-eyeRx} 0 A ${eyeRx} ${eyeRy} 0 0 1 ${eyeRx} 0 L ${eyeRx} ${-eyeRy * 0.5} L ${-eyeRx} ${-eyeRy * 0.5} Z`} fill={spec.skinShade} opacity={0.3} />
+              <ellipse rx={eyeRx} ry={eyeRy} fill="none" stroke={C.line} strokeWidth={1.6} />
             </g>
           )}
         </g>
@@ -130,53 +142,54 @@ export const Face: React.FC<{
 
       {/* Kaşlar */}
       {[-1, 1].map((side) => (
-        <g
-          key={side}
-          transform={`translate(${cx + side * eyeDx}, ${browBaseY}) rotate(${side * f.browTilt})`}
-        >
+        <g key={`brow-${side}`} transform={`translate(${cx + side * eyeDx}, ${browY}) rotate(${side * f.browTilt})`}>
           <path
-            d="M -19 0 Q 0 -7 19 -1"
+            d={`M ${-eyeRx * 1.15} 1 Q 0 -${eyeRy * 0.7} ${eyeRx * 1.15} 0`}
             fill="none"
-            stroke={C.ink}
-            strokeWidth={STROKE.thick}
+            stroke={spec.hairShade}
+            strokeWidth={4}
             strokeLinecap="round"
           />
         </g>
       ))}
 
-      {/* Burun */}
+      {/* Burun — sadece gölge tarafı */}
       <path
-        d={`M ${cx - 1} ${cy + 16} q -9 12 4 13`}
+        d={`M ${cx + 1} ${cy + ry * 0.1} q -${rx * 0.12} ${ry * 0.22} ${rx * 0.09} ${ry * 0.24}`}
         fill="none"
-        stroke={C.ink}
-        strokeWidth={STROKE.thin}
+        stroke={spec.skinShade}
+        strokeWidth={2.4}
         strokeLinecap="round"
-        opacity={0.75}
+        opacity={0.85}
       />
 
-      {/* Ağız — konuşurken açık ağız şekline geçer */}
+      {/* Çene gölgesi */}
+      <path
+        d={`M ${cx - rx * 0.5} ${cy + ry * 0.66} Q ${cx} ${cy + ry * 0.9} ${cx + rx * 0.5} ${cy + ry * 0.66}`}
+        fill="none"
+        stroke={spec.skinShade}
+        strokeWidth={2}
+        opacity={0.3}
+      />
+
+      {/* Ağız */}
       <g transform={`translate(${cx}, ${mouthY})`}>
         {talk > 0.05 ? (
-          <g transform={`scale(${subdued ? 0.8 : 1}, ${0.35 + talk * 0.9})`}>
+          <g transform={`scale(${subdued ? 0.78 : 1}, ${0.3 + talk * 0.95})`}>
             <path
-              d={
-                subdued
-                  ? 'M -24 2 Q 0 14 24 2 Q 22 24 0 26 Q -22 24 -24 2 Z'
-                  : 'M -26 -6 Q 0 -14 26 -6 Q 24 26 0 28 Q -24 26 -26 -6 Z'
-              }
-              fill={C.ink}
-              stroke={C.ink}
-              strokeWidth={STROKE.thin}
+              d={`M ${-mw * 0.85} ${subdued ? 1 : -2} Q 0 ${subdued ? mw * 0.3 : -mw * 0.25} ${mw * 0.85} ${subdued ? 1 : -2} Q ${mw * 0.7} ${mw * 0.85} 0 ${mw * 0.95} Q ${-mw * 0.7} ${mw * 0.85} ${-mw * 0.85} ${subdued ? 1 : -2} Z`}
+              fill="#140A12"
+              stroke={spec.skinShade}
+              strokeWidth={1.4}
               strokeLinejoin="round"
             />
-            {subdued ? null : <path d="M -16 16 Q 0 26 16 16 Q 0 24 -16 16 Z" fill="#E8657A" />}
           </g>
         ) : (
           <path
             d={mouth.d}
-            fill={mouth.filled ? C.ink : 'none'}
-            stroke={C.ink}
-            strokeWidth={mouth.filled ? STROKE.thin : STROKE.normal}
+            fill={mouth.fill ? '#140A12' : 'none'}
+            stroke={mouth.fill ? spec.skinShade : C.line}
+            strokeWidth={mouth.fill ? 1.4 : 2.6}
             strokeLinecap="round"
             strokeLinejoin="round"
           />

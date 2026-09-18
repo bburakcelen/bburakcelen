@@ -1,11 +1,12 @@
 import React from 'react';
 import {interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {C, FONT, STROKE} from '../theme';
-import {easeIn, popIn, pulse, stagger} from '../lib/anim';
+import {C, FONT, glow, textGlow} from '../theme';
+import {easeIn, loop, popIn, pulse, stagger} from '../lib/anim';
 
 /**
- * Buzdağı — "internette sadece sonucu görürsünüz" fikri için.
- * Su üstü küçük ve parlak, su altı kocaman ve karanlık.
+ * Buzdağı — "internette sadece sonucu görürsünüz".
+ * Sci-fi dilinde: su üstü parlak bir tepe, altta sonar taramasıyla
+ * ortaya çıkan devasa gövde.
  */
 export const Iceberg: React.FC<{
   readonly width: number;
@@ -16,15 +17,16 @@ export const Iceberg: React.FC<{
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const rise = popIn({frame, fps, delay});
-  const h = width * 0.98;
+  const h = width * 1.02;
   const waterY = h * 0.3;
-  const bob = pulse(frame, fps, 0.22) * 6;
+  const bob = pulse(frame, fps, 0.18) * 5;
+  const sonar = loop(frame, 140);
 
   return (
     <div style={{position: 'relative', width, height: h, transform: `scale(${rise})`}}>
-      <svg width={width} height={h} style={{overflow: 'visible'}}>
-        {/* Su altı kütlesi */}
+      <svg width={width} height={h} style={{overflow: 'visible', filter: glow(C.cyan, 0.5)}}>
         <g transform={`translate(0, ${bob})`}>
+          {/* Su altı gövdesi */}
           <path
             d={`M ${width * 0.5} ${waterY - 6}
                 L ${width * 0.93} ${waterY + 14}
@@ -32,57 +34,55 @@ export const Iceberg: React.FC<{
                 L ${width * 0.52} ${h}
                 L ${width * 0.26} ${h * 0.78}
                 L ${width * 0.06} ${waterY + 12} Z`}
-            fill="#2C6E9B"
-            stroke={C.ink}
-            strokeWidth={STROKE.normal}
+            fill={`${C.cyan}0E`}
+            stroke={`${C.cyan}66`}
+            strokeWidth={1.6}
             strokeLinejoin="round"
-            opacity={0.95}
           />
-          {/* Su üstü tepe */}
+          {/* Sonar tarama çizgisi */}
+          <line
+            x1={width * 0.04}
+            y1={waterY + (h - waterY) * sonar}
+            x2={width * 0.96}
+            y2={waterY + (h - waterY) * sonar}
+            stroke={C.cyan}
+            strokeWidth={1.6}
+            opacity={0.5}
+          />
+          {/* Su üstü tepe — tek parlak kısım */}
           <path
-            d={`M ${width * 0.5} ${h * 0.03}
-                L ${width * 0.63} ${waterY}
-                L ${width * 0.37} ${waterY} Z`}
-            fill={C.paper}
-            stroke={C.ink}
-            strokeWidth={STROKE.normal}
+            d={`M ${width * 0.5} ${h * 0.02} L ${width * 0.64} ${waterY} L ${width * 0.36} ${waterY} Z`}
+            fill={`${C.amber}44`}
+            stroke={C.amber}
+            strokeWidth={2.4}
             strokeLinejoin="round"
           />
         </g>
 
-        {/* Su çizgisi */}
-        <line
-          x1={-460}
-          y1={waterY}
-          x2={width + 460}
-          y2={waterY}
-          stroke={C.cyan}
-          strokeWidth={6}
-          strokeLinecap="round"
-          opacity={0.85}
-        />
+        {/* Su yüzeyi */}
+        <line x1={-500} y1={waterY} x2={width + 500} y2={waterY} stroke={C.cyan} strokeWidth={2.4} opacity={0.9} />
+        <rect x={-500} y={waterY} width={width + 1000} height={3} fill={C.cyan} opacity={0.2} />
       </svg>
 
-      {/* Su üstü etiketi */}
       <div
         style={{
           position: 'absolute',
-          top: -18,
+          top: -4,
           left: '50%',
           transform: 'translateX(-50%)',
           fontFamily: FONT.display,
           fontWeight: 700,
-          fontSize: 44,
-          color: C.gold,
+          fontSize: 38,
+          letterSpacing: '0.16em',
+          color: C.amber,
           whiteSpace: 'nowrap',
-          textShadow: `0 5px 0 ${C.ink}`,
+          textShadow: textGlow(C.amber, 1),
           opacity: easeIn({frame, delay: delay + 8, duration: 14}),
         }}
       >
         {topLabel}
       </div>
 
-      {/* Su altı etiketleri */}
       <div
         style={{
           position: 'absolute',
@@ -92,7 +92,7 @@ export const Iceberg: React.FC<{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 12,
+          gap: 14,
         }}
       >
         {bottomLabels.map((l, i) => {
@@ -101,13 +101,12 @@ export const Iceberg: React.FC<{
             <div
               key={l}
               style={{
-                fontFamily: FONT.body,
-                fontWeight: 800,
-                fontSize: 34,
-                color: C.paper,
-                opacity: o * 0.92,
+                fontFamily: FONT.mono,
+                fontSize: 27,
+                letterSpacing: '0.1em',
+                color: C.text,
+                opacity: o * 0.8,
                 transform: `translateY(${(1 - o) * 12}px)`,
-                textShadow: `0 3px 0 rgba(0,0,0,0.5)`,
               }}
             >
               {l}
@@ -119,50 +118,48 @@ export const Iceberg: React.FC<{
   );
 };
 
-/** Üstü çizili yasak işareti — içine istediğin nesneyi koyabilirsin. */
+/** Reddedildi damgası — içine istediğin nesneyi alır. */
 export const NoSign: React.FC<{
   readonly size: number;
   readonly delay?: number;
   readonly children?: React.ReactNode;
-}> = ({size, delay = 0, children}) => {
+  readonly label?: string;
+}> = ({size, delay = 0, children, label = 'DENIED'}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const ring = popIn({frame, fps, delay});
-  // Çapraz çizgi sonradan ve sert biçimde çizilir
-  const slash = interpolate(frame - delay - 12, [0, 8], [0, 1], {
+  const slash = interpolate(frame - delay - 12, [0, 7], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+  const flicker = frame > delay + 18 ? 0.72 + Math.abs(pulse(frame, fps, 3.2)) * 0.28 : 0;
 
   return (
     <div style={{position: 'relative', width: size, height: size, display: 'grid', placeItems: 'center'}}>
-      <div style={{position: 'absolute', transform: 'scale(0.76)'}}>{children}</div>
-      <svg width={size} height={size} viewBox="0 0 100 100" style={{position: 'absolute', overflow: 'visible'}}>
-        <circle
-          cx={50}
-          cy={50}
-          r={44}
-          fill="none"
-          stroke={C.down}
-          strokeWidth={11}
-          opacity={ring}
-          transform={`rotate(${(1 - ring) * -40} 50 50) scale(${ring}) translate(${(1 - ring) * 50} ${(1 - ring) * 50})`}
-        />
-        <line
-          x1={19}
-          y1={81}
-          x2={19 + 62 * slash}
-          y2={81 - 62 * slash}
-          stroke={C.down}
-          strokeWidth={11}
-          strokeLinecap="round"
-        />
+      <div style={{position: 'absolute', transform: 'scale(0.78)', filter: 'saturate(0.5) brightness(0.7)'}}>{children}</div>
+      <svg width={size} height={size} viewBox="0 0 100 100" style={{position: 'absolute', overflow: 'visible', filter: glow(C.red, 0.9)}}>
+        <circle cx={50} cy={50} r={44} fill="none" stroke={C.red} strokeWidth={4} opacity={ring} />
+        <line x1={19} y1={81} x2={19 + 62 * slash} y2={81 - 62 * slash} stroke={C.red} strokeWidth={4} strokeLinecap="round" />
       </svg>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: -14,
+          fontFamily: FONT.mono,
+          fontSize: size * 0.085,
+          letterSpacing: '0.34em',
+          color: C.red,
+          opacity: flicker,
+          textShadow: textGlow(C.red, 1),
+        }}
+      >
+        {label}
+      </div>
     </div>
   );
 };
 
-/** Kalkan — parayı koruma fikri. */
+/** Koruma kalkanı — enerji alanı. */
 export const Shield: React.FC<{readonly size: number; readonly delay?: number; readonly symbol?: string}> = ({
   size,
   delay = 0,
@@ -171,40 +168,34 @@ export const Shield: React.FC<{readonly size: number; readonly delay?: number; r
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = popIn({frame, fps, delay});
-  const shine = pulse(frame, fps, 0.45);
+  const ripple = loop(frame, 96);
 
   return (
-    <svg width={size} height={size * 1.12} viewBox="0 0 100 112" style={{overflow: 'visible', transform: `scale(${p})`}}>
+    <svg
+      width={size}
+      height={size * 1.12}
+      viewBox="0 0 100 112"
+      style={{overflow: 'visible', transform: `scale(${p})`, filter: glow(C.green, 0.9)}}
+    >
+      <path d="M 50 4 L 92 20 L 92 58 Q 92 92 50 108 Q 8 92 8 58 L 8 20 Z" fill={`${C.green}12`} stroke={C.green} strokeWidth={2.4} strokeLinejoin="round" />
+      <path d="M 50 14 L 83 27 L 83 58 Q 83 85 50 98 Q 17 85 17 58 L 17 27 Z" fill="none" stroke={C.green} strokeWidth={1} opacity={0.4} />
+      {/* Enerji dalgası */}
       <path
         d="M 50 4 L 92 20 L 92 58 Q 92 92 50 108 Q 8 92 8 58 L 8 20 Z"
-        fill={C.up}
-        stroke={C.ink}
-        strokeWidth={6}
-        strokeLinejoin="round"
+        fill="none"
+        stroke={C.green}
+        strokeWidth={3}
+        opacity={(1 - ripple) * 0.6}
+        transform={`translate(50 56) scale(${1 + ripple * 0.22}) translate(-50 -56)`}
       />
-      <path d="M 50 4 L 92 20 L 92 58 Q 92 92 50 108 Z" fill="#26A65B" opacity={0.6} />
-      <text
-        x={50}
-        y={58}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontFamily={FONT.display}
-        fontSize={46}
-        fontWeight={700}
-        fill={C.white}
-      >
+      <text x={50} y={58} textAnchor="middle" dominantBaseline="central" fontFamily={FONT.display} fontSize={40} fontWeight={700} fill={C.green}>
         {symbol}
       </text>
-      <path
-        d="M 24 26 L 40 22 L 30 50 Z"
-        fill={C.white}
-        opacity={0.28 + shine * 0.2}
-      />
     </svg>
   );
 };
 
-/** Büyük sayı sayacı — "1.000.000 abone" gibi anlar için. */
+/** Büyük sayaç — mono font, HUD okuması gibi. */
 export const Counter: React.FC<{
   readonly to: number;
   readonly duration?: number;
@@ -213,7 +204,7 @@ export const Counter: React.FC<{
   readonly suffix?: string;
   readonly size?: number;
   readonly color?: string;
-}> = ({to, duration = 50, delay = 0, prefix = '', suffix = '', size = 150, color = C.gold}) => {
+}> = ({to, duration = 50, delay = 0, prefix = '', suffix = '', size = 140, color = C.amber}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const p = popIn({frame, fps, delay});
@@ -223,36 +214,38 @@ export const Counter: React.FC<{
   return (
     <div
       style={{
-        fontFamily: FONT.display,
+        fontFamily: FONT.mono,
         fontWeight: 700,
         fontSize: size,
         color,
-        textShadow: `0 8px 0 ${C.ink}`,
+        textShadow: textGlow(color, 1.1),
         transform: `scale(${p})`,
         letterSpacing: '-0.02em',
         fontVariantNumeric: 'tabular-nums',
+        display: 'flex',
+        alignItems: 'baseline',
       }}
     >
       {prefix}
       {value.toLocaleString('en-US')}
-      {suffix}
+      <span style={{fontSize: size * 0.4, marginLeft: size * 0.06, opacity: 0.7}}>{suffix}</span>
     </div>
   );
 };
 
-/** Yorum kutucukları — izleyici etkileşimi sahneleri için. */
+/** İzleyici mesajları — terminal satırları gibi. */
 export const CommentStack: React.FC<{
   readonly items: readonly string[];
   readonly width: number;
   readonly delay?: number;
-}> = ({items, width, delay = 0}) => {
+  readonly color?: string;
+}> = ({items, width, delay = 0, color = C.cyan}) => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', gap: 18, width}}>
+    <div style={{display: 'flex', flexDirection: 'column', gap: 16, width}}>
       {items.map((item, i) => {
-        const p = popIn({frame, fps, delay: delay + stagger(i, 9)});
+        const p = easeIn({frame, delay: delay + stagger(i, 9), duration: 14});
         return (
           <div
             key={item}
@@ -260,26 +253,17 @@ export const CommentStack: React.FC<{
               display: 'flex',
               alignItems: 'center',
               gap: 16,
-              background: C.paper,
-              border: `${STROKE.normal}px solid ${C.ink}`,
-              borderRadius: 20,
+              background: `${color}0C`,
+              borderLeft: `3px solid ${color}`,
               padding: '14px 22px',
-              transform: `scale(${p}) translateX(${(1 - p) * -30}px)`,
-              transformOrigin: 'left center',
-              opacity: Math.min(1, p * 1.4),
+              opacity: p,
+              transform: `translateX(${(1 - p) * -26}px)`,
             }}
           >
-            <div
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: '50%',
-                background: [C.cyan, C.purple, C.up, C.gold][i % 4],
-                border: `4px solid ${C.ink}`,
-                flexShrink: 0,
-              }}
-            />
-            <div style={{fontFamily: FONT.body, fontWeight: 800, fontSize: 30, color: C.ink}}>{item}</div>
+            <span style={{fontFamily: FONT.mono, fontSize: 18, color, opacity: 0.7}}>
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span style={{fontFamily: FONT.body, fontWeight: 500, fontSize: 29, color: C.text}}>{item}</span>
           </div>
         );
       })}

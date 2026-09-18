@@ -3,10 +3,10 @@ import {AbsoluteFill} from 'remotion';
 import {Character} from '../characters/Character';
 import {A, B} from '../characters/presets';
 import {C, FONT} from '../theme';
+import {Grade} from '../effects/Grade';
 import type {Emotion, Pose} from '../characters/types';
 
-// Geliştirme amaçlı kontrol sayfası — karakterleri tüm duygu ve pozlarda
-// yan yana görmek için. Final videoda kullanılmaz.
+// Geliştirme amaçlı kontrol sayfası. Final videoda kullanılmaz.
 
 const EMOTIONS: Emotion[] = [
   'neutral', 'happy', 'excited', 'laughing', 'confident',
@@ -19,48 +19,48 @@ const POSES: Pose[] = [
 ];
 
 const Label: React.FC<{readonly children: React.ReactNode}> = ({children}) => (
-  <div style={{fontFamily: FONT.body, fontSize: 19, fontWeight: 700, color: C.muted, marginTop: 6}}>
+  <div style={{fontFamily: FONT.mono, fontSize: 16, fontWeight: 500, color: C.textDim, marginTop: 8, letterSpacing: '0.04em'}}>
     {children}
   </div>
 );
 
 export const CharacterSheet: React.FC = () => (
-  <AbsoluteFill style={{backgroundColor: C.bgDeep, padding: 40}}>
-    {/* Boy karşılaştırması */}
-    <div style={{display: 'flex', alignItems: 'flex-end', gap: 40, height: 520}}>
+  <AbsoluteFill style={{backgroundColor: C.deep, padding: 40}}>
+    <div style={{display: 'flex', alignItems: 'flex-end', gap: 46, height: 540}}>
       <div style={{textAlign: 'center'}}>
-        <Character spec={A} height={500} emotion="happy" pose="wave" talking />
-        <Label>A — uzun, sarı, mavi göz</Label>
+        <Character spec={A} height={520} emotion="confident" pose="presenting" talking />
+        <Label>A · airdrop / fırsat</Label>
       </div>
       <div style={{textAlign: 'center'}}>
-        <Character spec={B} height={500} emotion="confident" pose="crossed" />
-        <Label>B — kısa, siyah, siyah göz</Label>
+        <Character spec={B} height={520} emotion="confident" pose="crossed" />
+        <Label>B · futures / spot</Label>
       </div>
-      <div style={{flex: 1, display: 'flex', gap: 14, alignItems: 'flex-end'}}>
+      <div style={{flex: 1, display: 'flex', gap: 10, alignItems: 'flex-end'}}>
         {POSES.map((p) => (
           <div key={p} style={{textAlign: 'center'}}>
-            <Character spec={A} height={300} pose={p} emotion="neutral" />
+            <Character spec={A} height={310} pose={p} emotion="neutral" />
             <Label>{p}</Label>
           </div>
         ))}
       </div>
     </div>
 
-    {/* Duygu şeridi */}
-    <div style={{display: 'flex', gap: 10, marginTop: 30}}>
+    <div style={{display: 'flex', gap: 10, marginTop: 26}}>
       {EMOTIONS.map((e) => (
         <div key={e} style={{textAlign: 'center'}}>
-          <Character spec={A} height={190} emotion={e} crop="head" />
+          <Character spec={A} height={195} emotion={e} crop="head" />
           <Label>{e}</Label>
         </div>
       ))}
     </div>
-    <div style={{display: 'flex', gap: 10, marginTop: 14}}>
+    <div style={{display: 'flex', gap: 10, marginTop: 12}}>
       {EMOTIONS.map((e) => (
         <div key={e} style={{textAlign: 'center'}}>
-          <Character spec={B} height={190} emotion={e} crop="head" />
+          <Character spec={B} height={195} emotion={e} crop="head" />
         </div>
       ))}
     </div>
+
+    <Grade grain={0.05} scanlines={0.1} vignette={0.7} bloom={C.cyan} bloomStrength={0.6} />
   </AbsoluteFill>
 );

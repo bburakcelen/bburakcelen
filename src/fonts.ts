@@ -9,19 +9,28 @@ const LATIN =
 const LATIN_EXT =
   'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF';
 
-type Spec = {family: string; weight: number; subset: 'latin' | 'latin-ext'};
+type Spec = {family: string; file: string; weight: number; subset: 'latin' | 'latin-ext'};
 
+// Dosya adları boşluksuz ('Chakra Petch' -> ChakraPetch), CSS adı boşluklu.
 const SPECS: Spec[] = [
-  {family: 'Fredoka', weight: 500, subset: 'latin'},
-  {family: 'Fredoka', weight: 500, subset: 'latin-ext'},
-  {family: 'Fredoka', weight: 600, subset: 'latin'},
-  {family: 'Fredoka', weight: 600, subset: 'latin-ext'},
-  {family: 'Fredoka', weight: 700, subset: 'latin'},
-  {family: 'Fredoka', weight: 700, subset: 'latin-ext'},
-  {family: 'Nunito', weight: 700, subset: 'latin'},
-  {family: 'Nunito', weight: 700, subset: 'latin-ext'},
-  {family: 'Nunito', weight: 800, subset: 'latin'},
-  {family: 'Nunito', weight: 800, subset: 'latin-ext'},
+  {family: 'Chakra Petch', file: 'ChakraPetch', weight: 500, subset: 'latin'},
+  {family: 'Chakra Petch', file: 'ChakraPetch', weight: 500, subset: 'latin-ext'},
+  {family: 'Chakra Petch', file: 'ChakraPetch', weight: 600, subset: 'latin'},
+  {family: 'Chakra Petch', file: 'ChakraPetch', weight: 600, subset: 'latin-ext'},
+  {family: 'Chakra Petch', file: 'ChakraPetch', weight: 700, subset: 'latin'},
+  {family: 'Chakra Petch', file: 'ChakraPetch', weight: 700, subset: 'latin-ext'},
+  {family: 'Barlow', file: 'Barlow', weight: 400, subset: 'latin'},
+  {family: 'Barlow', file: 'Barlow', weight: 400, subset: 'latin-ext'},
+  {family: 'Barlow', file: 'Barlow', weight: 500, subset: 'latin'},
+  {family: 'Barlow', file: 'Barlow', weight: 500, subset: 'latin-ext'},
+  {family: 'Barlow', file: 'Barlow', weight: 600, subset: 'latin'},
+  {family: 'Barlow', file: 'Barlow', weight: 600, subset: 'latin-ext'},
+  {family: 'Barlow', file: 'Barlow', weight: 700, subset: 'latin'},
+  {family: 'Barlow', file: 'Barlow', weight: 700, subset: 'latin-ext'},
+  {family: 'JetBrains Mono', file: 'JetBrainsMono', weight: 500, subset: 'latin'},
+  {family: 'JetBrains Mono', file: 'JetBrainsMono', weight: 500, subset: 'latin-ext'},
+  {family: 'JetBrains Mono', file: 'JetBrainsMono', weight: 700, subset: 'latin'},
+  {family: 'JetBrains Mono', file: 'JetBrainsMono', weight: 700, subset: 'latin-ext'},
 ];
 
 let started = false;
@@ -36,7 +45,7 @@ export const loadFonts = () => {
 
   Promise.all(
     SPECS.map(async (spec) => {
-      const url = staticFile(`fonts/${spec.family}-${spec.weight}-${spec.subset}.woff2`);
+      const url = staticFile(`fonts/${spec.file}-${spec.weight}-${spec.subset}.woff2`);
       const face = new FontFace(spec.family, `url(${url}) format('woff2')`, {
         weight: String(spec.weight),
         style: 'normal',

@@ -1,60 +1,69 @@
-// TwoSide Boys — ortak tasarım dili.
-// Tüm sahneler ve karakterler bu dosyadan beslenir.
+// TwoSide Boys — sinematik sci-fi tasarım dili.
+//
+// Yön: neredeyse siyah bir zemin, üzerinde neon kenar ışıkları.
+// Karikatür dilinden farkı: kalın siyah kontur yok, doygun düz renk yok.
+// Formlar gölge ve kenar ışığıyla ayrışır — çizgiyle değil.
 
 export const C = {
-  // Arka plan katmanları
-  bgDeep: '#0F1729',
-  bgMid: '#1A2440',
-  bgLift: '#243056',
-  paper: '#FFF3DC',
+  // Zemin katmanları — mavi kayan siyahlar
+  void: '#03060E',
+  deep: '#070C1A',
+  panel: '#0B1426',
+  panelLift: '#121D38',
 
-  // Çizgi rengi — saf siyah yerine koyu lacivert, daha sıcak durur
-  ink: '#151B2E',
+  // Kontur: siyah değil, gölge laciverti. Uzaktan çizgi gibi durmaz.
+  line: '#16233E',
+  lineLit: '#2B4170',
 
-  // Ten
-  skin: '#F3C6A0',
-  skinShade: '#DDA980',
+  // Neon aksanlar
+  cyan: '#22E6FF',
+  cyanDim: '#0E6F84',
+  violet: '#9A6BFF',
+  violetDim: '#472A85',
+  amber: '#FFB23A',
+  amberDim: '#8A5C14',
+  green: '#2BE58E',
+  greenDim: '#126B45',
+  red: '#FF4D5E',
+  redDim: '#8C1F2C',
 
-  // A karakteri — uzun, sarı saç, mavi göz
-  aHair: '#F2C14E',
-  aHairShade: '#D9A431',
-  aEye: '#3B82F6',
-  aShirt: '#4F8EF7',
-  aShirtShade: '#3C6FD1',
+  // Metin
+  text: '#EAF2FF',
+  textDim: 'rgba(234, 242, 255, 0.56)',
+  textFaint: 'rgba(234, 242, 255, 0.26)',
 
-  // B karakteri — kısa, siyah saç, siyah göz
-  bHair: '#232A3B',
-  bHairShade: '#161C2B',
-  bEye: '#20263A',
-  bShirt: '#E8614A',
-  bShirtShade: '#C74A36',
-
-  // Anlam renkleri
-  up: '#2ECC71',
-  down: '#E74C3C',
-  gold: '#F5B82E',
-  goldShade: '#D69A16',
-  purple: '#8B5CF6',
-  cyan: '#22D3EE',
-  white: '#FFFFFF',
-  muted: 'rgba(255, 243, 220, 0.66)',
+  // Ten — soğuk ışık altında, desatüre
+  skin: '#D6A47F',
+  skinShade: '#9C6B4E',
+  skinLit: '#F0C9A6',
 } as const;
 
 export const FONT = {
-  display: "'Fredoka', system-ui, sans-serif",
-  body: "'Nunito', system-ui, sans-serif",
+  /** Başlıklar — teknik, köşeli. */
+  display: "'Chakra Petch', system-ui, sans-serif",
+  /** Gövde metni — nötr, hafif sıkışık. */
+  body: "'Barlow', system-ui, sans-serif",
+  /** Sayılar, HUD okumaları, ticker'lar. */
+  mono: "'JetBrains Mono', ui-monospace, monospace",
 } as const;
 
-// Videonun tamamı bu ölçüde tasarlanır; sahneler gerekirse ölçekler.
 export const VIDEO = {
   width: 1920,
   height: 1080,
   fps: 30,
 } as const;
 
-// Çizgi kalınlığı — karikatür hissinin temeli kalın ve tutarlı konturlar.
+// Konturlar artık ince: form gölgeyle tanımlanıyor, çizgiyle değil.
 export const STROKE = {
-  thick: 9,
-  normal: 6,
-  thin: 4,
+  thick: 5,
+  normal: 3.2,
+  thin: 2,
 } as const;
+
+/** Neon parlaması — SVG filter yerine ucuz ve tutarlı bir drop-shadow yığını. */
+export const glow = (color: string, strength = 1) =>
+  `drop-shadow(0 0 ${5 * strength}px ${color}) drop-shadow(0 0 ${16 * strength}px ${color}88)`;
+
+/** Metin için neon parlaması. */
+export const textGlow = (color: string, strength = 1) =>
+  `0 0 ${10 * strength}px ${color}cc, 0 0 ${34 * strength}px ${color}66`;

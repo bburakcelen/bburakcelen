@@ -43,7 +43,7 @@ export const ContactSheet: React.FC<ContactSheetProps> = ({page}) => {
               bottom: 0,
               right: 0,
               background: 'rgba(0,0,0,0.72)',
-              color: C.paper,
+              color: C.text,
               fontFamily: FONT.body,
               fontWeight: 800,
               fontSize: 15,
