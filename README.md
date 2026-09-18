@@ -7,52 +7,108 @@ Ses kaydı ve kurgu Adobe tarafında yapılacağı için bu proje iki çıktı v
 - **`Master`** — tüm sahneler arka arkaya, tek dosya (8:00)
 - **61 ayrı klip** — her sahne kendi başına bir kompozisyon, Adobe'da tek tek dizmek için
 
-## Kendi makinende kurulum
+## Kendi makinende kurulum (Mac, sıfırdan)
 
-**1. Node.js kur** (yoksa). <https://nodejs.org> → LTS sürümü indir, kur.
-Kurulduğunu doğrula:
+Hiç terminal kullanmadıysan bile adım adım takip edebilirsin.
+
+### 1. Terminal'i aç
+
+`Cmd + Boşluk` → **Terminal** yaz → Enter. Siyah/beyaz bir pencere açılır.
+Aşağıdaki komutları buraya yapıştırıp Enter'a basacaksın.
+
+### 2. Node.js kur
+
+<https://nodejs.org> adresine git, büyük yeşil **LTS** düğmesine bas.
+İnen `.pkg` dosyasına çift tıkla, "İleri → İleri → Kur" de.
+
+**Kurduktan sonra Terminal'i kapat, yeniden aç.** (Yoksa Terminal yeni
+kurulumu görmez.) Sonra:
 
 ```bash
-node -v      # v18 ya da üstü görmelisin
+node -v
 ```
 
-**2. Projeyi indir.** Git kuruluysa:
+`v22.x.x` gibi bir şey yazmalı. "command not found" diyorsa Terminal'i
+yeniden açmayı unutmuşsundur.
+
+### 3. Projeyi indir
+
+Tarayıcıda <https://github.com/bburakcelen/bburakcelen> adresine git.
+Yeşil **Code** düğmesi → **Download ZIP**.
+
+İnen dosyaya çift tıkla — Mac otomatik açar, `Downloads` içinde bir klasör
+oluşur.
+
+### 4. Terminal'i o klasöre götür
+
+Terminal'e şunu yaz (sondaki **boşluğu bırak**, Enter'a basma):
+
+```
+cd 
+```
+
+Sonra Finder'dan az önce açılan klasörü **sürükleyip Terminal penceresinin
+üstüne bırak**. Yolu kendisi yazar. Şimdi Enter'a bas.
+
+Doğru yerde misin diye kontrol et:
 
 ```bash
-git clone https://github.com/bburakcelen/bburakcelen.git
-cd bburakcelen
+ls
 ```
 
-Git kurmak istemiyorsan: GitHub'da repo sayfasında yeşil **Code** düğmesi →
-**Download ZIP**. Aç, klasöre gir.
+Listede `package.json`, `src`, `README.md` görüyorsan tamam.
 
-**3. Bağımlılıkları kur:**
+### 5. Kur
 
 ```bash
 npm install
 ```
 
-**4. Render al:**
+Bir-iki dakika sürer, ekrandan bir sürü yazı akar — normal.
+Sonunda `added 260 packages` gibi bir satır görürsün.
+
+### 6. Önce küçük bir test
+
+Tam videoyu başlatmadan önce tek sahne dene (~1 dakika):
 
 ```bash
-npm run render:4k        # 3840×2160 → out/TwoSideBoys-4k.mp4
-npm run render           # 1920×1080 → out/TwoSideBoys.mp4
+npx remotion render s47-find-out out/test.mp4 --scale=2
 ```
 
-Birkaç not:
+**İlk çalıştırmada Remotion kendi tarayıcısını indirir (~150 MB)** — bu tek
+seferlik, internet gerekir. `out/test.mp4` oluştuysa her şey hazır.
 
-- **İlk render'da Remotion kendi Chrome'unu indirir** (~150 MB, tek seferlik).
-  İnternet gerekir; sonraki render'larda gerekmez.
-- Bu depodaki komutlarda `--browser-executable` yok — o bayrak sadece kapalı
-  ağlı sunucularda gerekiyor, senin makinende Remotion kendi tarayıcısını
-  bulur.
-- 4K render için **~5 GB boş disk** ayır (çıktı ~1 GB, geri kalanı geçici
-  kareler).
-- Çekirdek sayına göre hızlandır:
+### 7. Tam 4K render
 
 ```bash
-npx remotion render Master out/video.mp4 --scale=2 --concurrency=8
+caffeinate -i npm run render:4k
 ```
+
+`caffeinate -i` Mac'in uyumasını engeller — render saatler sürdüğü için
+önemli. Terminal penceresini kapatma.
+
+Bitince dosyayı aç:
+
+```bash
+open out
+```
+
+`TwoSideBoys-4k.mp4` orada, 3840×2160.
+
+### Süre ve disk
+
+4K render M-serisi bir MacBook'ta kabaca **1–2 saat** sürer. **~5 GB boş
+disk** ayır. Çekirdek sayına göre hızlandırmak istersen:
+
+```bash
+caffeinate -i npx remotion render Master out/video.mp4 --scale=2 --concurrency=8
+```
+
+### Sonradan güncelleme gelirse
+
+ZIP ile indirdiysen tekrar indirip aynı adımları uygularsın. Sık güncelleme
+alacaksan `git clone` daha rahat olur ama Mac'te ilk `git` komutu Xcode
+araçlarını indirmek isteyebilir (birkaç GB).
 
 ## Hızlı başlangıç
 
