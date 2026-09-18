@@ -7,6 +7,53 @@ Ses kaydı ve kurgu Adobe tarafında yapılacağı için bu proje iki çıktı v
 - **`Master`** — tüm sahneler arka arkaya, tek dosya (8:00)
 - **61 ayrı klip** — her sahne kendi başına bir kompozisyon, Adobe'da tek tek dizmek için
 
+## Kendi makinende kurulum
+
+**1. Node.js kur** (yoksa). <https://nodejs.org> → LTS sürümü indir, kur.
+Kurulduğunu doğrula:
+
+```bash
+node -v      # v18 ya da üstü görmelisin
+```
+
+**2. Projeyi indir.** Git kuruluysa:
+
+```bash
+git clone https://github.com/bburakcelen/bburakcelen.git
+cd bburakcelen
+```
+
+Git kurmak istemiyorsan: GitHub'da repo sayfasında yeşil **Code** düğmesi →
+**Download ZIP**. Aç, klasöre gir.
+
+**3. Bağımlılıkları kur:**
+
+```bash
+npm install
+```
+
+**4. Render al:**
+
+```bash
+npm run render:4k        # 3840×2160 → out/TwoSideBoys-4k.mp4
+npm run render           # 1920×1080 → out/TwoSideBoys.mp4
+```
+
+Birkaç not:
+
+- **İlk render'da Remotion kendi Chrome'unu indirir** (~150 MB, tek seferlik).
+  İnternet gerekir; sonraki render'larda gerekmez.
+- Bu depodaki komutlarda `--browser-executable` yok — o bayrak sadece kapalı
+  ağlı sunucularda gerekiyor, senin makinende Remotion kendi tarayıcısını
+  bulur.
+- 4K render için **~5 GB boş disk** ayır (çıktı ~1 GB, geri kalanı geçici
+  kareler).
+- Çekirdek sayına göre hızlandır:
+
+```bash
+npx remotion render Master out/video.mp4 --scale=2 --concurrency=8
+```
+
 ## Hızlı başlangıç
 
 ```bash
