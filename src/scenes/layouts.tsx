@@ -138,8 +138,8 @@ export const Duo: React.FC<{
         <div style={{display: 'flex', alignItems: 'flex-end', gap: center ? 150 : 110}}>
           <div style={{position: 'relative'}}>
             {bubble && speaker === 'A' ? (
-              <div style={{position: 'absolute', bottom: '84%', left: 40, width: 520}}>
-                <SpeechBubble width={520} delay={12} tail="left">
+              <div style={{position: 'absolute', bottom: '82%', left: 20, width: 660}}>
+                <SpeechBubble width={660} delay={12} tail="left" fontSize={44}>
                   {bubble}
                 </SpeechBubble>
               </div>
@@ -151,8 +151,8 @@ export const Duo: React.FC<{
 
           <div style={{position: 'relative'}}>
             {bubble && speaker === 'B' ? (
-              <div style={{position: 'absolute', bottom: '84%', right: 40, width: 520}}>
-                <SpeechBubble width={520} delay={12} tail="right">
+              <div style={{position: 'absolute', bottom: '82%', right: 20, width: 660}}>
+                <SpeechBubble width={660} delay={12} tail="right" fontSize={44}>
                   {bubble}
                 </SpeechBubble>
               </div>

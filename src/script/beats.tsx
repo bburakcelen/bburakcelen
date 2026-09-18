@@ -256,7 +256,7 @@ export const BEATS: readonly Beat[] = [
         caption="Our journey. Our research."
         mood="calm"
         state={{emotion: 'happy', pose: 'presenting', talking: true}}
-        prop={<Magnifier size={260} delay={10} />}
+        prop={<Magnifier size={330} delay={10} />}
       />
     ),
   },
@@ -563,10 +563,10 @@ export const BEATS: readonly Beat[] = [
       'That’s exactly what we’re working on right now. We started from zero. We built ourselves a new budget.',
     node: (
       <Spotlight caption="We started from zero." mood="chart">
-        <Row gap={70}>
-          <Counter to={0} delay={4} duration={2} size={210} color={C.muted} />
-          <div style={{fontFamily: FONT.display, fontSize: 100, color: C.paper}}>→</div>
-          <CandleChart width={660} height={360} trend="recover" count={16} delay={16} seed="restart" />
+        <Row gap={76}>
+          <Counter to={0} delay={4} duration={2} size={290} color={C.paper} />
+          <div style={{fontFamily: FONT.display, fontSize: 110, color: C.paper, opacity: 0.55}}>→</div>
+          <CandleChart width={760} height={420} trend="recover" count={16} delay={16} seed="restart" />
         </Row>
       </Spotlight>
     ),
@@ -600,7 +600,7 @@ export const BEATS: readonly Beat[] = [
         captionSize={54}
         mood="calm"
         state={{emotion: 'happy', pose: 'presenting', talking: true}}
-        prop={<Magnifier size={300} delay={10} />}
+        prop={<Magnifier size={390} delay={10} />}
       />
     ),
   },
@@ -654,7 +654,7 @@ export const BEATS: readonly Beat[] = [
         a={{emotion: 'thinking', pose: 'presenting', talking: true}}
         b={{emotion: 'neutral', pose: 'crossed'}}
         mood="night"
-        center={<Magnifier size={220} delay={10} />}
+        center={<Magnifier size={310} delay={10} />}
       />
     ),
   },
@@ -711,7 +711,7 @@ export const BEATS: readonly Beat[] = [
     node: (
       <Spotlight caption="The internet only shows you the tip" mood="calm" grid={false}>
         <Iceberg
-          width={740}
+          width={810}
           topLabel="THE MILLIONS"
           bottomLabels={[
             'Hundreds of mistakes',
