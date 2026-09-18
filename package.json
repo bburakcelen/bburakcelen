@@ -1,20 +1,28 @@
 {
-  "name": "bburakcelen-remotion",
+  "name": "twoside-boys-animation",
   "version": "1.0.0",
   "private": true,
-  "description": "Remotion ile programatik video/animasyon projesi",
+  "description": "TwoSide Boys kanal tanıtım videosu — Remotion ile karikatür animasyon",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "remotion studio",
     "studio": "remotion studio",
-    "render": "remotion render HelloWorld out/HelloWorld.mp4",
-    "render:vertical": "remotion render HelloWorldVertical out/HelloWorldVertical.mp4",
-    "still": "remotion still HelloWorld out/thumbnail.png",
+    "timeline": "tsx scripts/timeline.mts",
+    "timeline:md": "tsx scripts/timeline.mts -- --md",
+    "render": "remotion render Master out/TwoSideBoys.mp4",
+    "render:prores": "remotion render Master out/TwoSideBoys.mov --codec=prores --prores-profile=4444",
+    "render:clips": "node scripts/render-all.mjs --video",
+    "render:frames": "node scripts/render-all.mjs",
     "typecheck": "tsc --noEmit",
     "upgrade": "remotion upgrade"
   },
   "dependencies": {
+    "@remotion/animation-utils": "4.0.526",
     "@remotion/cli": "4.0.526",
+    "@remotion/noise": "4.0.526",
+    "@remotion/paths": "4.0.526",
+    "@remotion/shapes": "4.0.526",
+    "@remotion/transitions": "4.0.526",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "remotion": "4.0.526"
@@ -22,6 +30,7 @@
   "devDependencies": {
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "tsx": "4.23.13",
     "typescript": "5.9.3"
   }
 }
