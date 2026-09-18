@@ -18,7 +18,7 @@ const MOODS: Record<Mood, MoodSpec> = {
   void: {core: '#0A1526', edge: '#03060E', accent: C.cyan, bloom: C.cyan},
   data: {core: '#07202E', edge: '#03080F', accent: C.cyan, bloom: C.cyan},
   risk: {core: '#2A0A14', edge: '#0A0306', accent: C.red, bloom: C.red},
-  wealth: {core: '#2A1E06', edge: '#0B0703', accent: C.amber, bloom: C.amber},
+  wealth: {core: '#241705', edge: '#070401', accent: C.amber, bloom: C.amber},
   deep: {core: '#160B33', edge: '#04030C', accent: C.violet, bloom: C.violet},
   dawn: {core: '#1E1430', edge: '#05050D', accent: C.violet, bloom: C.cyan},
 };
@@ -129,12 +129,13 @@ const Beams: React.FC<{readonly accent: string}> = ({accent}) => {
               position: 'absolute',
               left: w * px,
               top: -h * 0.1,
-              width: w * 0.3,
-              height: h * 1.2,
+              width: w * 0.46,
+              height: h * 1.25,
               transform: `translateX(-50%) skewX(${-9 + i * 8}deg)`,
-              background: `linear-gradient(to bottom, ${accent}22 0%, ${accent}0A 42%, transparent 82%)`,
-              opacity: breathe * 0.75,
-              filter: 'blur(26px)',
+              // Radyal gradyan her yöne yumuşak biter; blur filtresine gerek
+              // kalmaz — aynı görüntü, kare başına çok daha ucuz.
+              background: `radial-gradient(ellipse 42% 58% at 50% 12%, ${accent}26 0%, ${accent}0E 34%, ${accent}05 58%, transparent 80%)`,
+              opacity: breathe * 0.9,
             }}
           />
         );
@@ -188,7 +189,7 @@ export const Stage: React.FC<{
         <AbsoluteFill>{children}</AbsoluteFill>
       </Camera>
 
-      {grade ? <Grade bloom={m.bloom} bloomStrength={0.9} /> : null}
+      {grade ? <Grade bloom={m.bloom} bloomStrength={0.72} /> : null}
     </AbsoluteFill>
   );
 };
