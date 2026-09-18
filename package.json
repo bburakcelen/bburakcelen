@@ -1,0 +1,27 @@
+{
+  "name": "bburakcelen-remotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Remotion ile programatik video/animasyon projesi",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "remotion studio",
+    "studio": "remotion studio",
+    "render": "remotion render HelloWorld out/HelloWorld.mp4",
+    "render:vertical": "remotion render HelloWorldVertical out/HelloWorldVertical.mp4",
+    "still": "remotion still HelloWorld out/thumbnail.png",
+    "typecheck": "tsc --noEmit",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.526",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.526"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}
