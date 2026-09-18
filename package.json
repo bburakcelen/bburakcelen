@@ -8,7 +8,7 @@
     "dev": "remotion studio",
     "studio": "remotion studio",
     "timeline": "tsx scripts/timeline.mts",
-    "timeline:md": "tsx scripts/timeline.mts -- --md",
+    "timeline:md": "tsx scripts/timeline.mts --md",
     "render": "remotion render Master out/TwoSideBoys.mp4",
     "render:prores": "remotion render Master out/TwoSideBoys.mov --codec=prores --prores-profile=4444",
     "render:clips": "node scripts/render-all.mjs --video",
