@@ -69,6 +69,22 @@ Karakterler sürekli canlı: nefes alır, göz kırpar, `talking` verildiğinde 
 
 Hepsini bir arada görmek için Studio'da **`DevCharacterSheet`** kompozisyonunu aç.
 
+## Geliştirme araçları
+
+Studio'da üç yardımcı kompozisyon var (final videoda kullanılmaz):
+
+| Kompozisyon | Ne gösterir |
+| --- | --- |
+| `DevCharacterSheet` | İki karakter, tüm duygular ve pozlar tek ekranda |
+| `DevContactSheet1`–`4` | 61 sahnenin tamamı 4×4 ızgarada, zaman damgalarıyla |
+
+Kontak sayfaları en çok işe yarayan araç: 8 dakikalık videoyu render etmeden
+bütünü görüp hangi sahnenin zayıf kaldığını anlıyorsun.
+
+```bash
+npx remotion still DevContactSheet1 out/contact1.png --frame=52
+```
+
 ## Proje yapısı
 
 ```
