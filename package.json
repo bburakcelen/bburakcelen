@@ -2,7 +2,7 @@
   "name": "twoside-boys-animation",
   "version": "1.0.0",
   "private": true,
-  "description": "TwoSide Boys kanal tanıtım videosu — Remotion ile karikatür animasyon",
+  "description": "TwoSide Boys kanal tan\u0131t\u0131m videosu \u2014 Remotion ile karikat\u00fcr animasyon",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "remotion studio",
@@ -10,8 +10,10 @@
     "timeline": "tsx scripts/timeline.mts",
     "timeline:md": "tsx scripts/timeline.mts --md",
     "render": "remotion render Master out/TwoSideBoys.mp4",
+    "render:4k": "remotion render Master out/TwoSideBoys-4k.mp4 --scale=2",
     "render:prores": "remotion render Master out/TwoSideBoys.mov --codec=prores --prores-profile=4444",
     "render:clips": "node scripts/render-all.mjs --video",
+    "render:clips:4k": "node scripts/render-all.mjs --video --scale=2",
     "render:frames": "node scripts/render-all.mjs",
     "typecheck": "tsc --noEmit",
     "upgrade": "remotion upgrade"

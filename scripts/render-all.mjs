@@ -1,7 +1,8 @@
 /**
  * Tüm sahneleri tek tek render eder.
- *   node scripts/render-all.mjs            → her sahneden bir PNG (hızlı kontrol)
- *   node scripts/render-all.mjs --video    → her sahneden bir MP4 klip
+ *   node scripts/render-all.mjs                      → her sahneden bir PNG
+ *   node scripts/render-all.mjs --video              → her sahneden bir MP4 (1080p)
+ *   node scripts/render-all.mjs --video --scale=2    → aynısı 4K olarak
  *
  * Adobe'a alacağın klipleri üretmek için --video kullan.
  */
@@ -10,7 +11,11 @@ import {mkdirSync} from 'node:fs';
 
 const video = process.argv.includes('--video');
 const browser = process.env.REMOTION_BROWSER;
-const outDir = video ? 'out/clips' : 'out/frames';
+// --scale=2 → 1080p kompozisyonu 4K olarak basar (büyütme değil, gerçek çözünürlük)
+const scaleArg = process.argv.find((a) => a.startsWith('--scale='));
+const scale = scaleArg ? scaleArg.split('=')[1] : null;
+const suffix = scale && scale !== '1' ? `-${scale}x` : '';
+const outDir = video ? `out/clips${suffix}` : `out/frames${suffix}`;
 mkdirSync(outDir, {recursive: true});
 
 // Sahne kimliklerini Remotion'un kendi listesinden al.
@@ -34,6 +39,7 @@ for (const [i, id] of ids.entries()) {
   const args = video
     ? ['remotion', 'render', id, target]
     : ['remotion', 'still', id, target, '--frame=40'];
+  if (scale) args.push(`--scale=${scale}`);
   if (browser) args.push(`--browser-executable=${browser}`);
 
   process.stdout.write(`[${String(i + 1).padStart(2)}/${ids.length}] ${id} … `);

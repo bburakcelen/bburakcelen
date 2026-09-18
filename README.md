@@ -23,9 +23,11 @@ Studio'da soldaki listeden `Master`'ı seç, zaman çizelgesinde gez. Tek bir sa
 | `npm run dev` | Studio (canlı önizleme) |
 | `npm run timeline` | Sahne listesi + zaman damgaları (terminal) |
 | `npm run timeline:md` | Aynısı `out/timeline.md` dosyasına |
-| `npm run render` | Master videoyu `out/TwoSideBoys.mp4` olarak üretir |
+| `npm run render` | Master videoyu `out/TwoSideBoys.mp4` olarak üretir (1080p) |
+| `npm run render:4k` | Master'ı 3840×2160 olarak üretir |
 | `npm run render:prores` | Master'ı ProRes 4444 (.mov) olarak — Adobe'a girdi için |
 | `npm run render:clips` | 61 sahnenin her birini ayrı mp4 olarak `out/clips/` altına |
+| `npm run render:clips:4k` | Aynısı 4K olarak, `out/clips-2x/` altına |
 | `npm run render:frames` | Her sahneden bir PNG — hızlı görsel kontrol |
 | `npm run typecheck` | TypeScript kontrolü |
 
@@ -195,6 +197,50 @@ Master'ı Adobe'a sokacaksan kalite kaybı olmaması için ProRes tercih et:
 
 ```bash
 npm run render:prores
+```
+
+## 4K
+
+Kompozisyon 1920×1080 tasarlandı ama **her şey vektör** — SVG şekiller ve
+metin. Yani 4K büyütme değil, gerçek çözünürlük: aynı sahne iki kat
+piksel yoğunluğunda yeniden çizilir, hatlar ve yazılar gerçekten keskinleşir.
+
+```bash
+npm run render:4k
+# ya da elle:
+npx remotion render Master out/video.mp4 --scale=2
+```
+
+`--scale=2`, 1920×1080 kompozisyonu 3840×2160 basar. Tasarımda hiçbir
+şeyi değiştirmen gerekmez; ölçüler CSS pikseli cinsinden kaldığı için
+yerleşim birebir aynı kalır.
+
+**Ölçülen maliyet** (aynı 66 karelik sahne, 4 çekirdek):
+
+| | Süre | Boyut |
+| --- | --- | --- |
+| 1080p | 16 sn | 2.1 MB |
+| 4K (`--scale=2`) | 51 sn | 5.7 MB |
+
+Tam videoya vurursan: 1080p'de ~45 dakika ve ~390 MB olan çıktı, 4K'da
+kabaca **2–3 saat ve ~1 GB** olur. Çekirdek sayın arttıkça süre düşer:
+
+```bash
+npx remotion render Master out/video.mp4 --scale=2 --concurrency=8
+```
+
+4K'yı varsayılan yapmak istersen `remotion.config.ts` içine
+`Config.setScale(2)` ekleyebilirsin — ama geliştirme sırasında her render
+üç kat yavaşlar, o yüzden ayrı komut olarak bırakmak daha rahat.
+
+**Neden 4K yüklemek mantıklı:** YouTube 4K yüklemelere daha yüksek bitrate
+ve VP9 kodlama veriyor. İzleyici 1080p'de izlese bile görüntü, doğrudan
+1080p yüklenmiş bir videodan daha temiz görünür.
+
+**Alfa kanallı 4K klip** gerekiyorsa:
+
+```bash
+npx remotion render s27-lost-everything out/klip.webm --codec=vp8 --image-format=png --scale=2
 ```
 
 ## Render süresi
