@@ -300,7 +300,7 @@ export const Spotlight: React.FC<{
         style={{
           alignItems: 'center',
           justifyContent: 'center',
-          paddingBottom: hasChars ? 190 : 0,
+          paddingBottom: hasChars ? 210 : 0,
           paddingTop: caption ? 90 : 0,
         }}
       >
@@ -310,8 +310,8 @@ export const Spotlight: React.FC<{
       {hasChars ? (
         <AbsoluteFill style={{justifyContent: 'flex-end', paddingBottom: 1080 - FLOOR}}>
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '0 130px'}}>
-            <div>{a ? <Standing who="A" height={420} state={a} delay={10} /> : null}</div>
-            <div>{b ? <Standing who="B" height={420} state={b} delay={14} /> : null}</div>
+            <div>{a ? <Standing who="A" height={488} state={a} delay={10} /> : null}</div>
+            <div>{b ? <Standing who="B" height={488} state={b} delay={14} /> : null}</div>
           </div>
         </AbsoluteFill>
       ) : null}

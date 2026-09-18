@@ -47,12 +47,19 @@ const useBlink = (seed: string) => {
   return Math.min(1, Math.abs(t - 3) / 3);
 };
 
-/** Konuşurken ağzın açılıp kapanma miktarı — jenerik bir gevezelik ritmi. */
-const useTalk = (seed: string, talking: boolean) => {
+/**
+ * Konuşurken ağzın açılma miktarı — jenerik bir gevezelik ritmi.
+ * Olumsuz duygularda ağız çok daha az açılır: yoksa üzgün bir yüzde
+ * kocaman açık ağız "bağırıyor / seviniyor" gibi okunuyor.
+ */
+const SUBDUED: ReadonlySet<Emotion> = new Set(['sad', 'worried', 'defeated', 'thinking']);
+
+const useTalk = (seed: string, talking: boolean, emotion: Emotion) => {
   const frame = useCurrentFrame();
   if (!talking) return 0;
   const tick = Math.floor(frame / 3);
-  return 0.28 + 0.72 * random(`talk-${seed}-${tick}`);
+  const raw = 0.28 + 0.72 * random(`talk-${seed}-${tick}`);
+  return SUBDUED.has(emotion) ? raw * 0.4 : raw;
 };
 
 const mouthPath = (shape: MouthShape): {d: string; filled: boolean} => {
@@ -85,7 +92,8 @@ export const Face: React.FC<{
 }> = ({spec, emotion, talking, cx, cy}) => {
   const f = FACES[emotion];
   const blink = useBlink(spec.id);
-  const talk = useTalk(spec.id, talking);
+  const talk = useTalk(spec.id, talking, emotion);
+  const subdued = SUBDUED.has(emotion);
 
   const eyeDx = spec.headRx * 0.38;
   const eyeY = cy - 6;
@@ -149,15 +157,19 @@ export const Face: React.FC<{
       {/* Ağız — konuşurken açık ağız şekline geçer */}
       <g transform={`translate(${cx}, ${mouthY})`}>
         {talk > 0.05 ? (
-          <g transform={`scale(1, ${0.35 + talk * 0.9})`}>
+          <g transform={`scale(${subdued ? 0.8 : 1}, ${0.35 + talk * 0.9})`}>
             <path
-              d="M -26 -6 Q 0 -14 26 -6 Q 24 26 0 28 Q -24 26 -26 -6 Z"
+              d={
+                subdued
+                  ? 'M -24 2 Q 0 14 24 2 Q 22 24 0 26 Q -22 24 -24 2 Z'
+                  : 'M -26 -6 Q 0 -14 26 -6 Q 24 26 0 28 Q -24 26 -26 -6 Z'
+              }
               fill={C.ink}
               stroke={C.ink}
               strokeWidth={STROKE.thin}
               strokeLinejoin="round"
             />
-            <path d="M -16 16 Q 0 26 16 16 Q 0 24 -16 16 Z" fill="#E8657A" />
+            {subdued ? null : <path d="M -16 16 Q 0 26 16 16 Q 0 24 -16 16 Z" fill="#E8657A" />}
           </g>
         ) : (
           <path

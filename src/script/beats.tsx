@@ -99,7 +99,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's04-topics',
     script:
-      'We are going to talk about leverage trading, spot trading, blockchain, and all kinds of opportunities across the crypto space.',
+      'We’re going to talk about leverage trading, spot trading, blockchain, and all kinds of opportunities across the crypto space.',
     node: (
       <ListReveal
         heading="What we'll talk about"
@@ -112,7 +112,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's05-not-that-channel',
     script:
-      'But we do not want to be one of those channels that just pulls up a chart and says, buy here, sell here.',
+      'But we don’t want to be one of those channels that just pulls up a chart and says, buy here, sell here.',
     node: (
       <Solo
         who="B"
@@ -170,7 +170,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's08-middle-of-it',
-    script: 'We are going to be right in the middle of all of it.',
+    script: 'We’re going to be right in the middle of all of it.',
     node: (
       <Duo
         caption="Right in the middle of all of it"
@@ -185,7 +185,7 @@ export const BEATS: readonly Beat[] = [
   /* ------------------------------------------------------- SORUMLULUK */
   {
     id: 's09-one-thing-clear',
-    script: 'But before we go any further, there is one thing we want to make very clear from the beginning.',
+    script: 'But before we go any further, there’s one thing we want to make very clear from the beginning.',
     node: (
       <Duo
         caption="One thing, very clear"
@@ -197,7 +197,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's10-never-ask-money',
-    script: 'We are never going to ask you for money or anything else.',
+    script: 'We’re never going to ask you for money or anything else.',
     node: (
       <Spotlight caption="We will never ask you for money" mood="danger" grid={false}>
         <NoSign size={600} delay={10}>
@@ -208,7 +208,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's11-not-advice',
-    script: 'We are not here to give you financial advice.',
+    script: 'We’re not here to give you financial advice.',
     node: (
       <Solo
         who="A"
@@ -222,7 +222,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's12-instead',
     script:
-      'Instead, we are going to show you what we are doing, why we are doing it, and what we learn along the way.',
+      'Instead, we’re going to show you what we’re doing, why we’re doing it, and what we learn along the way.',
     node: (
       <ListReveal
         heading="Instead, we show you"
@@ -249,7 +249,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's14-share-journey',
-    script: 'We are simply going to share our journey, our experiences, and our own research with you.',
+    script: 'We’re simply going to share our journey, our experiences, and our own research with you.',
     node: (
       <Solo
         who="B"
@@ -265,7 +265,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's15-who-are-we',
     script:
-      'So, who are we? Honestly, where we were born or where we live does not really matter that much.',
+      'So, who are we? Honestly, where we were born or where we live doesn’t really matter that much.',
     node: (
       <Duo
         caption="So… who are we?"
@@ -278,7 +278,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's16-citizens',
-    script: 'We are citizens of the world. And we live all over the world.',
+    script: 'We’re citizens of the world. And we live all over the world.',
     node: (
       <Spotlight
         caption="Citizens of the world"
@@ -294,7 +294,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's17-two-different',
     script:
-      'We are two different people. Two different personalities. Two different perspectives. And we are interested in different parts of the crypto space.',
+      'We’re two different people. Two different personalities. Two different perspectives. And we’re interested in different parts of the crypto space.',
     node: (
       <Duo
         caption="Two people. Two perspectives."
@@ -307,7 +307,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's18-idea-begins',
-    script: 'That is really where the whole idea behind TwoSide Boys begins.',
+    script: 'That’s really where the whole idea behind TwoSide Boys begins.',
     node: (
       <TitleCard
         title="That's where it begins"
@@ -321,7 +321,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's19-role-a',
     script:
-      'One of us is going to be more active on the futures and spot trading side. We will share our trades, the strategies we use, how we look at the market, and everything we learn as we go.',
+      'One of us is going to be more active on the futures and spot trading side. We’ll share our trades, the strategies we use, how we look at the market, and everything we learn as we go.',
     node: (
       <Solo
         who="A"
@@ -331,8 +331,8 @@ export const BEATS: readonly Beat[] = [
         state={{emotion: 'confident', pose: 'point', talking: true}}
         propSide="left"
         prop={
-          <Screen width={640} height={400} delay={6}>
-            <CandleChart width={560} height={310} trend="up" count={16} delay={12} seed="roleA" />
+          <Screen width={830} height={510} delay={6}>
+            <CandleChart width={740} height={410} trend="up" count={16} delay={12} seed="roleA" />
           </Screen>
         }
       />
@@ -341,7 +341,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's20-role-b',
     script:
-      'The other one is going to be more focused on chasing opportunities across the crypto space. Airdrops, new projects, blockchain ecosystems, on-chain research, and opportunities that most people have not noticed yet.',
+      'The other one is going to be more focused on chasing opportunities across the crypto space. Airdrops, new projects, blockchain ecosystems, on-chain research, and opportunities that most people haven’t noticed yet.',
     node: (
       <ListReveal
         heading="Chasing opportunities"
@@ -424,13 +424,13 @@ export const BEATS: readonly Beat[] = [
       <Spotlight caption="Making it ≠ keeping it" mood="calm">
         <Row gap={110}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20}}>
-            <MoneyBag size={280} delay={6} />
-            <div style={{fontFamily: FONT.body, fontWeight: 800, fontSize: 40, color: C.gold}}>MAKING IT</div>
+            <MoneyBag size={340} delay={6} />
+            <div style={{fontFamily: FONT.body, fontWeight: 800, fontSize: 48, color: C.gold}}>MAKING IT</div>
           </div>
-          <div style={{fontFamily: FONT.display, fontSize: 96, color: C.paper, opacity: 0.6}}>≠</div>
+          <div style={{fontFamily: FONT.display, fontSize: 112, color: C.paper, opacity: 0.6}}>≠</div>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20}}>
-            <Shield size={280} delay={18} />
-            <div style={{fontFamily: FONT.body, fontWeight: 800, fontSize: 40, color: C.up}}>KEEPING IT</div>
+            <Shield size={340} delay={18} />
+            <div style={{fontFamily: FONT.body, fontWeight: 800, fontSize: 48, color: C.up}}>KEEPING IT</div>
           </div>
         </Row>
       </Spotlight>
@@ -439,7 +439,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's26-hard-way',
     script:
-      'We learned that the hard way. We were young. We did not have enough experience. And at certain points, we simply did not know how to properly manage the amount of money we had made.',
+      'We learned that the hard way. We were young. We didn’t have enough experience. And at certain points, we simply didn’t know how to properly manage the amount of money we had made.',
     node: (
       <Duo
         caption="We learned it the hard way"
@@ -465,8 +465,17 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's28-not-easy',
-    script: 'That period was not easy for us.',
-    node: <CloseUp who="B" emotion="defeated" caption="That period was not easy." mood="danger" side="right" />,
+    script: 'That period wasn’t easy for us.',
+    node: (
+      <CloseUp
+        who="B"
+        emotion="defeated"
+        caption="That period was not easy."
+        mood="danger"
+        side="right"
+        talking={false}
+      />
+    ),
   },
   {
     id: 's29-valuable',
@@ -484,7 +493,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's30-when-going-well',
     script:
-      'Because when everything is going well, you do not really understand the value of certain things. When you have money, you do not always realize how big the risks really are. When you are making money, you do not realize how important it is to stay disciplined.',
+      'Because when everything is going well, you don’t really understand the value of certain things. When you have money, you don’t always realize how big the risks really are. When you’re making money, you don’t realize how important it’s to stay disciplined.',
     node: (
       <ListReveal
         heading="When it's going well…"
@@ -531,7 +540,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's33-the-questions',
     script:
-      'What did we do wrong? Where did we take too much risk? Why could not we maintain the same level of discipline when things were going well? And most importantly, what do we need to do to make sure we never end up in the same place again?',
+      'What did we do wrong? Where did we take too much risk? Why couldn’t we maintain the same level of discipline when things were going well? And most importantly, what do we need to do to make sure we never end up in the same place again?',
     node: (
       <ListReveal
         heading="The questions"
@@ -551,7 +560,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's34-from-zero',
     script:
-      'That is exactly what we are working on right now. We started from zero. We built ourselves a new budget.',
+      'That’s exactly what we’re working on right now. We started from zero. We built ourselves a new budget.',
     node: (
       <Spotlight caption="We started from zero." mood="chart">
         <Row gap={70}>
@@ -583,7 +592,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's36-not-about-money',
     script:
-      'But we also do not want this channel to be just a story about us making or losing money. Because for us, the really interesting part is not the money itself. It is understanding how this whole world actually works.',
+      'But we also don’t want this channel to be just a story about us making or losing money. Because for us, the really interesting part isn’t the money itself. It’s understanding how this whole world actually works.',
     node: (
       <Solo
         who="A"
@@ -637,7 +646,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's39-sometimes',
     script:
-      'Sometimes, we will find the answers. Sometimes, we will not. Sometimes, we will discover something really valuable. And sometimes, we will spend hours researching something only to end up saying…',
+      'Sometimes, we’ll find the answers. Sometimes, we’ll not. Sometimes, we’ll discover something really valuable. And sometimes, we’ll spend hours researching something only to end up saying…',
     node: (
       <Duo
         caption="Sometimes we find it. Sometimes we don't."
@@ -651,7 +660,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's40-nothing-here',
-    script: 'Bro, there is literally nothing here.',
+    script: 'Bro, there’s literally nothing here.',
     seconds: 3.4,
     node: (
       <Duo
@@ -668,20 +677,22 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's41-real-process',
     script:
-      'But the whole process is going to be real. This is not some perfectly prepared story where everything is made to look perfect. This is a real journey.',
+      'But the whole process is going to be real. This isn’t some perfectly prepared story where everything is made to look perfect. This is a real journey.',
     node: (
-      <Duo
-        caption="This is a real journey."
-        a={{emotion: 'confident', pose: 'point', talking: true}}
-        b={{emotion: 'happy', pose: 'crossed'}}
+      <Spotlight
         mood="warm"
-      />
+        grid={false}
+        a={{emotion: 'confident', pose: 'crossed'}}
+        b={{emotion: 'happy', pose: 'thumbsUp'}}
+      >
+        <Big size={126}>No filters. This is a real journey.</Big>
+      </Spotlight>
     ),
   },
   {
     id: 's42-win-lose',
     script:
-      'When we win, we will say we won. When we lose, we will say we lost. And when we make a mistake, we are not going to hide it.',
+      'When we win, we’ll say we won. When we lose, we’ll say we lost. And when we make a mistake, we’re not going to hide it.',
     node: (
       <ListReveal
         heading="No filters"
@@ -715,7 +726,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's44-show-that-too',
-    script: 'And that is something we want to show too.',
+    script: 'And that’s something we want to show too.',
     node: (
       <Duo
         caption="We want to show that part too."
@@ -761,7 +772,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's47-find-out',
-    script: 'We are going to find out together.',
+    script: 'We’re going to find out together.',
     node: (
       <Duo
         caption="We'll find out together."
@@ -774,7 +785,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's48-come-back',
     script:
-      'And maybe, years from now, we will come back to this video and say… Wait, this is really where we started?',
+      'And maybe, years from now, we’ll come back to this video and say… Wait, this is really where we started?',
     node: (
       <Duo
         bubble={'"Wait… this is really\nwhere we started?"'}
@@ -788,7 +799,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's49-maybe',
     script:
-      'Maybe we will be in a completely different place. Maybe we will be creating content from different parts of the world. Maybe we will be working with completely different people. Maybe this community will grow into something huge, bringing people together from all around the world.',
+      'Maybe we’ll be in a completely different place. Maybe we’ll be creating content from different parts of the world. Maybe we’ll be working with completely different people. Maybe this community will grow into something huge, bringing people together from all around the world.',
     node: (
       <ListReveal
         heading="Maybe…"
@@ -807,7 +818,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's50-dont-know',
-    script: 'We do not know right now. But we do not need to know.',
+    script: 'We don’t know right now. But we don’t need to know.',
     node: (
       <Duo
         caption="We don't know. And we don't need to."
@@ -820,7 +831,7 @@ export const BEATS: readonly Beat[] = [
   },
   {
     id: 's51-starting',
-    script: 'Because for now, there is only one thing we know for sure: we are starting.',
+    script: 'Because for now, there’s only one thing we know for sure: we’re starting.',
     node: (
       <TitleCard
         title="WE'RE STARTING"
@@ -848,7 +859,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's53-first-videos',
     script:
-      'We will be releasing our first videos very soon. Futures, spot trading, blockchain research, new projects, airdrops, on-chain analysis, and all kinds of different opportunities we come across in the market. We are going to talk about all of it here.',
+      'We’ll be releasing our first videos very soon. Futures, spot trading, blockchain research, new projects, airdrops, on-chain analysis, and all kinds of different opportunities we come across in the market. We’re going to talk about all of it here.',
     node: (
       <ListReveal
         heading="Coming very soon"
@@ -871,7 +882,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's54-free-series',
     script:
-      'But it is not going to be just about the topics we choose. Based on what you guys ask for, we will also create free educational series.',
+      'But it’s not going to be just about the topics we choose. Based on what you guys ask for, we’ll also create free educational series.',
     node: (
       <Spotlight
         caption="Free educational series"
@@ -887,7 +898,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's55-ask-us',
     script:
-      'If there is something you do not understand, drop it in the comments. If there is something you are curious about, ask us. If you want us to look into a project, let us know. If there is a strategy you do not understand, tell us.',
+      'If there’s something you don’t understand, drop it in the comments. If there’s something you’re curious about, ask us. If you want us to look into a project, let us know. If there’s a strategy you don’t understand, tell us.',
     node: (
       <Solo
         who="B"
@@ -897,7 +908,7 @@ export const BEATS: readonly Beat[] = [
         propSide="left"
         prop={
           <CommentStack
-            width={640}
+            width={780}
             delay={8}
             items={[
               "I don't get this part…",
@@ -926,7 +937,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's57-together',
     script:
-      'Because we do not want this to be a channel where it is just us talking. We want to build the TwoSide Boys story together.',
+      'Because we don’t want this to be a channel where it’s just us talking. We want to build the TwoSide Boys story together.',
     node: (
       <Duo
         caption="Let's build this together."
@@ -955,7 +966,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's59-starting-point',
     script:
-      'So do not think of this video as just a channel introduction. For us, this is a starting point. The first record of where we began.',
+      'So don’t think of this video as just a channel introduction. For us, this is a starting point. The first record of where we began.',
     node: (
       <Duo
         caption="This is the first record of where we began."
@@ -969,7 +980,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's60-like-subscribe',
     script:
-      'And by the way, do not forget to like the video and subscribe to the channel. Because maybe by the time we hit one million subscribers, you will finally know who we are.',
+      'And by the way, don’t forget to like the video and subscribe to the channel. Because maybe by the time we hit one million subscribers, you’ll finally know who we’re.',
     node: (
       <Spotlight
         caption="Like & subscribe"
@@ -988,7 +999,7 @@ export const BEATS: readonly Beat[] = [
   {
     id: 's61-outro',
     script:
-      'But for now, just remember this: we are two friends. We are two different sides. And we are just getting started. TwoSide Boys.',
+      'But for now, just remember this: we’re two friends. We’re two different sides. And we’re just getting started. TwoSide Boys.',
     node: (
       <TitleCard
         title="TwoSide Boys"

@@ -136,7 +136,7 @@ export const NoSign: React.FC<{
 
   return (
     <div style={{position: 'relative', width: size, height: size, display: 'grid', placeItems: 'center'}}>
-      <div style={{position: 'absolute', transform: 'scale(0.62)'}}>{children}</div>
+      <div style={{position: 'absolute', transform: 'scale(0.76)'}}>{children}</div>
       <svg width={size} height={size} viewBox="0 0 100 100" style={{position: 'absolute', overflow: 'visible'}}>
         <circle
           cx={50}

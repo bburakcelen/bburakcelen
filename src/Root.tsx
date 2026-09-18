@@ -1,6 +1,7 @@
 import React from 'react';
 import {Composition} from 'remotion';
 import {CharacterSheet} from './dev/CharacterSheet';
+import {ContactSheet} from './dev/ContactSheet';
 import {loadFonts} from './fonts';
 import {Master} from './Master';
 import {TIMELINE, TOTAL_FRAMES} from './script/timeline';
@@ -34,6 +35,19 @@ export const RemotionRoot: React.FC = () => {
           fps={VIDEO.fps}
           width={VIDEO.width}
           height={VIDEO.height}
+        />
+      ))}
+
+      {[0, 1, 2, 3].map((page) => (
+        <Composition
+          key={page}
+          id={`DevContactSheet${page + 1}`}
+          component={ContactSheet}
+          durationInFrames={60}
+          fps={VIDEO.fps}
+          width={VIDEO.width}
+          height={VIDEO.height}
+          defaultProps={{page}}
         />
       ))}
 

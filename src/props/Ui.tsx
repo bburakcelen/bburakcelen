@@ -39,6 +39,8 @@ export const SpeechBubble: React.FC<{
           lineHeight: 1.28,
           color: textColor,
           textAlign: 'center',
+          // beats.tsx'te \n ile satır kırabilmek için
+          whiteSpace: 'pre-line',
         }}
       >
         {children}

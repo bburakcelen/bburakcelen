@@ -18,10 +18,12 @@ const POSES: Record<Pose, PoseSpec> = {
   pointUp: {left: {upper: 14, fore: 10}, right: {upper: 152, fore: 14}},
   wave: {left: {upper: 14, fore: 10}, right: {upper: 152, fore: -22}},
   armsUp: {left: {upper: 156, fore: 16}, right: {upper: 156, fore: 16}},
-  shrug: {left: {upper: 62, fore: 74}, right: {upper: 62, fore: 74}},
-  thumbsUp: {left: {upper: 14, fore: 10}, right: {upper: 40, fore: 76}},
+  shrug: {left: {upper: 56, fore: 72}, right: {upper: 56, fore: 72}},
+  thumbsUp: {left: {upper: 14, fore: 10}, right: {upper: 10, fore: 200}},
   facepalm: {left: {upper: 16, fore: 12}, right: {upper: 132, fore: 104}},
-  crossed: {left: {upper: 54, fore: 108}, right: {upper: 54, fore: 108}},
+  // Göğüste kavuşan kollar: önkol açısı 180°'yi aşınca el gövdeye doğru döner.
+  // İki kol hafif farklı ki üst üste binip tek çizgi gibi görünmesinler.
+  crossed: {left: {upper: 22, fore: 232}, right: {upper: 18, fore: 244}},
   presenting: {left: {upper: 16, fore: 12}, right: {upper: 80, fore: 20}},
 };
 

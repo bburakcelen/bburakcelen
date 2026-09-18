@@ -109,7 +109,8 @@ export const Coin: React.FC<{
   const {fps} = useVideoConfig();
   const p = popIn({frame, fps, delay});
   const bob = float ? pulse(frame, fps, 0.55, phase) * (size * 0.06) : 0;
-  const squash = spin ? Math.abs(Math.cos(loop(frame, 70) * Math.PI * 2)) * 0.9 + 0.1 : 1;
+  // 0.34 taban: madeni para tam profilden bakıldığında kaybolmasın
+  const squash = spin ? Math.abs(Math.cos(loop(frame, 78) * Math.PI * 2)) * 0.66 + 0.34 : 1;
 
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" style={{overflow: 'visible', transform: `translateY(${bob}px) scale(${p})`}}>
