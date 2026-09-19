@@ -155,6 +155,8 @@ export const Stage: React.FC<{
   /** Kamera hareketi. Arka plan da birlikte hareket eder — paralaks oluşur. */
   readonly move?: CameraMove;
   readonly moveAmount?: number;
+  /** El kamerası salınımı. Kapak görselinde 0 — kadraj kareye göre kaymasın. */
+  readonly handheld?: number;
   readonly children?: React.ReactNode;
 }> = ({
   mood = 'void',
@@ -164,6 +166,7 @@ export const Stage: React.FC<{
   grade = true,
   move = 'pushIn',
   moveAmount = 1,
+  handheld = 1,
   children,
 }) => {
   const frame = useCurrentFrame();
@@ -175,7 +178,7 @@ export const Stage: React.FC<{
     <AbsoluteFill style={{backgroundColor: m.edge}}>
       {/* Kamera arka planı da taşır: katmanlar birlikte kayınca paralaks olur.
           Renk/doku katmanı dışarıda kalır — o objektifin kendisi. */}
-      <Camera move={move} amount={moveAmount}>
+      <Camera move={move} amount={moveAmount} handheld={handheld}>
         <AbsoluteFill
           style={{
             background: `radial-gradient(ellipse ${74 * breathe}% ${70 * breathe}% at 50% 46%, ${m.core} 0%, ${m.edge} 78%)`,

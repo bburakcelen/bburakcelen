@@ -52,6 +52,10 @@ export type CharacterSpec = {
   readonly skin: string;
   readonly skinShade: string;
   readonly skinLit: string;
+  /** Ten gradyanının en dip tonu. Verilmezse sıcak bir gölge kullanılır. */
+  readonly skinDeep?: string;
+  /** Boyun rengi — yakanın altında kalan dar şerit. */
+  readonly neck?: string;
 
   // İskelet ölçüleri
   readonly legLength: number;

@@ -105,7 +105,7 @@ export const Torso: React.FC<Props> = ({spec, cx, hipY, shoulderY, neckY}) => {
       {/* Boyun — gölgede */}
       <path
         d={`M ${cx - 13} ${neckY - 14} L ${cx + 13} ${neckY - 14} L ${cx + 11} ${shoulderY + 8} L ${cx - 11} ${shoulderY + 8} Z`}
-        fill="#4A3225"
+        fill={spec.neck ?? '#4A3225'}
         stroke={C.line}
         strokeWidth={STROKE.thin}
         strokeLinejoin="round"

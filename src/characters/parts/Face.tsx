@@ -198,3 +198,42 @@ export const Face: React.FC<{
     </g>
   );
 };
+
+/**
+ * Kapak görseli için yüz: hat yok, yalnız parlayan iki göz.
+ * Ağız ve burun çizgileri siluette gürültü gibi okunuyordu; kaldırılınca
+ * "henüz kim olduğumuzu bilmiyorsun" fikri görselin kendisinden çıkıyor.
+ */
+export const VisorEyes: React.FC<{
+  readonly spec: CharacterSpec;
+  readonly cx: number;
+  readonly cy: number;
+}> = ({spec, cx, cy}) => {
+  const dx = spec.headRx * 0.44;
+  const y = cy - spec.headRy * 0.02;
+  const w = spec.headRx * 0.46;
+  const h = spec.headRy * 0.17;
+
+  return (
+    <g>
+      {[-1, 1].map((side) => (
+        <g key={side} transform={`translate(${cx + side * dx}, ${y}) rotate(${side * 5})`}>
+          {/* Hale — gözün çevreye vurduğu ışık */}
+          <ellipse rx={w * 1.5} ry={h * 2.4} fill={spec.eyeGlow} opacity={0.22} />
+          <ellipse rx={w * 0.85} ry={h * 1.3} fill={spec.eyeGlow} opacity={0.34} />
+          {/* Gözün kendisi — aksan renginde, içi beyaz sıcaklıkta */}
+          <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={h / 2} fill={spec.eye} />
+          <rect
+            x={-w / 2 + 1.6}
+            y={-h / 2 + 1.3}
+            width={w - 3.2}
+            height={h - 2.6}
+            rx={(h - 2.6) / 2}
+            fill="#FFFFFF"
+            opacity={0.82}
+          />
+        </g>
+      ))}
+    </g>
+  );
+};

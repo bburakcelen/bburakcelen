@@ -4,6 +4,7 @@ import {CharacterSheet} from './dev/CharacterSheet';
 import {ContactSheet} from './dev/ContactSheet';
 import {loadFonts} from './fonts';
 import {Master} from './Master';
+import {ThumbA, ThumbB, ThumbC, ThumbD} from './thumbnail/Thumbnails';
 import {buildTimeline} from './script/timeline';
 import type {LocaleId} from './script/text';
 import {VIDEO} from './theme';
@@ -64,6 +65,19 @@ export const RemotionRoot: React.FC = () => (
         />
       )),
     )}
+
+    {/* YouTube kapakları — 1280x720, still olarak basılır */}
+    {([['ThumbA', ThumbA], ['ThumbB', ThumbB], ['ThumbC', ThumbC], ['ThumbD', ThumbD]] as const).map(([id, comp]) => (
+      <Composition
+        key={id}
+        id={id}
+        component={comp}
+        durationInFrames={60}
+        fps={VIDEO.fps}
+        width={1280}
+        height={720}
+      />
+    ))}
 
     <Composition
       id="DevCharacterSheet"

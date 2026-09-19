@@ -82,3 +82,25 @@ export const skeleton = (spec: CharacterSpec) => {
 
   return {groundY, centerX, hipY, shoulderY, neckY, headCy};
 };
+
+/**
+ * Karakteri siluete çevirir: tüm dolgular neredeyse siyah, kenar ışığı
+ * ve gözler aksan renginde parlar. Kapak görselinde "kim olduğumuzu
+ * henüz bilmiyorsun" fikrini görselin kendisi anlatsın diye.
+ */
+export const silhouetteOf = (s: CharacterSpec): CharacterSpec => ({
+  ...s,
+  hair: '#080B14',
+  hairShade: '#05070E',
+  jacket: '#0B1018',
+  jacketLit: '#182234',
+  jacketShade: '#05070E',
+  pants: '#080B14',
+  skin: '#131A28',
+  skinShade: '#080C16',
+  skinLit: '#202B3E',
+  skinDeep: '#04060C',
+  neck: '#080C16',
+  eye: s.accent,
+  eyeGlow: s.accent,
+});

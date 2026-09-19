@@ -4,7 +4,7 @@ import {C, STROKE, glow} from '../theme';
 import {pulse} from '../lib/anim';
 import {Arm} from './parts/Arm';
 import {Legs, Torso} from './parts/Body';
-import {Face} from './parts/Face';
+import {Face, VisorEyes} from './parts/Face';
 import {HairBack, HairFront} from './parts/Hair';
 import {skeleton} from './presets';
 import type {CharacterSpec, Emotion, Pose, PoseSpec} from './types';
@@ -40,6 +40,8 @@ export type CharacterProps = {
   readonly crop?: 'full' | 'bust' | 'head';
   /** Kenar ışığı şiddeti. 0 = kapalı. */
   readonly rim?: number;
+  /** Yüz hatlarını siler; geriye yalnız parlayan gözler kalır. Kapak için. */
+  readonly faceless?: boolean;
   readonly style?: React.CSSProperties;
 };
 
@@ -57,6 +59,7 @@ export const Character: React.FC<CharacterProps> = ({
   energy = 0,
   crop = 'full',
   rim = 1,
+  faceless = false,
   style,
 }) => {
   const frame = useCurrentFrame();
@@ -139,7 +142,7 @@ export const Character: React.FC<CharacterProps> = ({
             <stop offset="0%" stopColor={spec.skinLit} />
             <stop offset="34%" stopColor={spec.skin} />
             <stop offset="78%" stopColor={spec.skinShade} />
-            <stop offset="100%" stopColor="#5C3B28" />
+            <stop offset="100%" stopColor={spec.skinDeep ?? '#5C3B28'} />
           </linearGradient>
         </defs>
 
@@ -206,7 +209,11 @@ export const Character: React.FC<CharacterProps> = ({
             opacity={0.62}
           />
 
-          <Face spec={spec} emotion={emotion} talking={talking} cx={sk.centerX} cy={sk.headCy} />
+          {faceless ? (
+            <VisorEyes spec={spec} cx={sk.centerX} cy={sk.headCy} />
+          ) : (
+            <Face spec={spec} emotion={emotion} talking={talking} cx={sk.centerX} cy={sk.headCy} />
+          )}
           <HairFront spec={spec} cx={sk.centerX} cy={sk.headCy} />
         </g>
       </svg>

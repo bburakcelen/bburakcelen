@@ -22,7 +22,8 @@
     "render:clips:4k:de": "node scripts/render-all.mjs --video --de --scale=2",
     "render:frames": "node scripts/render-all.mjs",
     "typecheck": "tsc --noEmit",
-    "upgrade": "remotion upgrade"
+    "upgrade": "remotion upgrade",
+    "thumbs": "remotion still ThumbA out/ThumbA.png && remotion still ThumbB out/ThumbB.png && remotion still ThumbC out/ThumbC.png && remotion still ThumbD out/ThumbD.png"
   },
   "dependencies": {
     "@remotion/animation-utils": "4.0.526",
