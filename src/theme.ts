@@ -47,6 +47,8 @@ export const FONT = {
   mono: "'JetBrains Mono', ui-monospace, monospace",
   /** Kapak manşetleri — ağır, sıkışık, uzaktan bağıran. */
   punch: "'Anton', 'Arial Black', system-ui, sans-serif",
+  /** Nötr grotesk — düz renk bloklarındaki kısa cümleler için. */
+  ui: "'Inter', system-ui, -apple-system, sans-serif",
 } as const;
 
 export const VIDEO = {

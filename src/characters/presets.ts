@@ -104,3 +104,14 @@ export const silhouetteOf = (s: CharacterSpec): CharacterSpec => ({
   eye: s.accent,
   eyeGlow: s.accent,
 });
+
+/**
+ * Kapak için karakteri açar. Videodaki ceket renkleri karanlık sahneye
+ * göre ayarlı; aydınlık ve renkli bir kapakta koyu bir leke gibi
+ * okunuyorlar. Kimlik ipuçları (saç, göz, aksan) aynı kalıyor —
+ * yalnızca kumaş bir durak açılıyor.
+ */
+export const vividOf = (s: CharacterSpec): CharacterSpec =>
+  s.id === 'A'
+    ? {...s, jacket: '#2E5391', jacketLit: '#5A8EDC', jacketShade: '#16294C', pants: '#254271'}
+    : {...s, jacket: '#4E3A63', jacketLit: '#8465A6', jacketShade: '#261B36', pants: '#3C2C4E'};

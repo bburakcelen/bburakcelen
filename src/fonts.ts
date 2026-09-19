@@ -9,10 +9,22 @@ const LATIN =
 const LATIN_EXT =
   'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF';
 
-type Spec = {family: string; file: string; weight: number; subset: 'latin' | 'latin-ext'};
+type Spec = {
+  family: string;
+  file: string;
+  /** Dosya adındaki ağırlık eki. Değişken fontlarda 'var'. */
+  weight: number | 'var';
+  subset: 'latin' | 'latin-ext';
+  /** Değişken font: tek dosya tüm ağırlıkları taşır. */
+  range?: string;
+};
 
 // Dosya adları boşluksuz ('Chakra Petch' -> ChakraPetch), CSS adı boşluklu.
 const SPECS: Spec[] = [
+  // Inter — kapaklardaki temiz grotesk. Google tek değişken dosya veriyor,
+  // o yüzden ağırlık aralığıyla kaydediliyor.
+  {family: 'Inter', file: 'Inter', weight: 'var', subset: 'latin', range: '100 900'},
+  {family: 'Inter', file: 'Inter', weight: 'var', subset: 'latin-ext', range: '100 900'},
   // Anton — YouTube kapaklarının klasik ağır sıkışık fontu. Tek ağırlığı var.
   {family: 'Anton', file: 'Anton', weight: 400, subset: 'latin'},
   {family: 'Anton', file: 'Anton', weight: 400, subset: 'latin-ext'},
@@ -50,7 +62,7 @@ export const loadFonts = () => {
     SPECS.map(async (spec) => {
       const url = staticFile(`fonts/${spec.file}-${spec.weight}-${spec.subset}.woff2`);
       const face = new FontFace(spec.family, `url(${url}) format('woff2')`, {
-        weight: String(spec.weight),
+        weight: spec.range ?? String(spec.weight),
         style: 'normal',
         unicodeRange: spec.subset === 'latin' ? LATIN : LATIN_EXT,
       });
