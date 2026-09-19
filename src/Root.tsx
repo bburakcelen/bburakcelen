@@ -5,6 +5,7 @@ import {ContactSheet} from './dev/ContactSheet';
 import {loadFonts} from './fonts';
 import {Master} from './Master';
 import {ThumbA, ThumbB, ThumbC, ThumbD} from './thumbnail/Thumbnails';
+import {FigurePreview} from './thumbnail/Preview';
 import {buildTimeline} from './script/timeline';
 import type {LocaleId} from './script/text';
 import {VIDEO} from './theme';
@@ -65,6 +66,15 @@ export const RemotionRoot: React.FC = () => (
         />
       )),
     )}
+
+    <Composition
+      id="FigurePreview"
+      component={FigurePreview}
+      durationInFrames={1}
+      fps={VIDEO.fps}
+      width={1400}
+      height={760}
+    />
 
     {/* YouTube kapakları — 1280x720, still olarak basılır */}
     {([['ThumbA', ThumbA], ['ThumbB', ThumbB], ['ThumbC', ThumbC], ['ThumbD', ThumbD]] as const).map(([id, comp]) => (

@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, random} from 'remotion';
 import {FONT} from '../theme';
-import {Coin} from './pop';
+import {GoldCoin} from './figure';
 
 /**
  * Referans kapakların dili: düz zemin yok, derinlik var.
@@ -16,6 +16,13 @@ import {Coin} from './pop';
  */
 
 /** Yumuşak ışık kaynağı. Zemini düz olmaktan çıkaran ana araç. */
+export const P = {
+  black: '#0A0A0C',
+  white: '#FFFFFF',
+  red: '#E4002B',
+  green: '#00E070',
+} as const;
+
 export const Orb: React.FC<{
   readonly x: string;
   readonly y: string;
@@ -115,22 +122,56 @@ export const ChartGlow: React.FC<{
   );
 };
 
-/** Farklı boyda ve netlikte birkaç madeni para — alan derinliği hissi. */
+/** Farklı boyda ve netlikte birkaç madeni — alan derinliği hissi. */
 export const CoinCluster: React.FC<{
   readonly x: string;
   readonly y: string;
   readonly scale?: number;
 }> = ({x, y, scale = 1}) => (
   <div style={{position: 'absolute', left: x, top: y, transform: `translate(-50%, -50%) scale(${scale})`}}>
-    <div style={{position: 'absolute', left: -186, top: -108, filter: 'blur(3.5px)', opacity: 0.78}}>
-      <Coin size={128} rotate={-24} />
+    <div style={{position: 'absolute', left: -196, top: -128, filter: 'blur(4px)', opacity: 0.72}}>
+      <GoldCoin size={132} rotate={-22} seed="far" shadow={false} />
     </div>
-    <div style={{position: 'absolute', left: 74, top: 66, filter: 'blur(2px)', opacity: 0.86}}>
-      <Coin size={104} rotate={17} />
+    <div style={{position: 'absolute', left: 96, top: 82, filter: 'blur(2px)', opacity: 0.85}}>
+      <GoldCoin size={108} rotate={16} seed="mid" shadow={false} />
     </div>
-    <Coin size={214} rotate={-11} />
+    <GoldCoin size={226} rotate={-9} seed="near" />
   </div>
 );
+
+// Yükselen bir seri — kapakta "yukarı giden grafik" mesajı tek bakışta okunsun
+const BARS = [0.3, 0.24, 0.33, 0.29, 0.4, 0.35, 0.47, 0.43, 0.55, 0.5, 0.62, 0.58, 0.7, 0.66, 0.78, 0.74, 0.85, 0.81, 0.92, 0.99];
+
+/** Mum grafiği — kripto kapaklarının değişmez arka plan öğesi. */
+export const Candles: React.FC<{
+  readonly width?: number;
+  readonly height?: number;
+  readonly opacity?: number;
+}> = ({width = 1280, height = 340, opacity = 1}) => {
+  const cw = width / BARS.length;
+  const bw = cw * 0.5;
+  const Y = (v: number) => height - (v * height * 0.9 + height * 0.05);
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{display: 'block', opacity}}>
+      {BARS.map((v, i) => {
+        const prev = i === 0 ? v - 0.05 : BARS[i - 1];
+        const up = v >= prev;
+        const cx = cw * (i + 0.5);
+        const top = Y(Math.max(v, prev));
+        const bot = Y(Math.min(v, prev));
+        const col = up ? P.green : P.red;
+
+        return (
+          <g key={i}>
+            <line x1={cx} y1={top - 14 - (i % 3) * 7} x2={cx} y2={bot + 13 + (i % 2) * 6} stroke={col} strokeWidth={5} />
+            <rect x={cx - bw / 2} y={top} width={bw} height={Math.max(10, bot - top)} rx={2} fill={col} />
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
 
 /**
  * Düz renk metin bloğu — referans kapakların imzası.
