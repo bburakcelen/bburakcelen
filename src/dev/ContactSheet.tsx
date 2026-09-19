@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
-import {TIMELINE, timecode} from '../script/timeline';
+import {buildTimeline, timecode} from '../script/timeline';
+import type {LocaleId} from '../script/text';
 import {C, FONT, VIDEO} from '../theme';
 
 // Geliştirme aracı: sahneleri küçültülmüş bir ızgarada yan yana gösterir.
@@ -10,10 +11,11 @@ const COLS = 4;
 const ROWS = 4;
 const PER_PAGE = COLS * ROWS;
 
-export type ContactSheetProps = {readonly page: number};
+export type ContactSheetProps = {readonly page: number; readonly locale: LocaleId};
 
-export const ContactSheet: React.FC<ContactSheetProps> = ({page}) => {
-  const slice = TIMELINE.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+export const ContactSheet: React.FC<ContactSheetProps> = ({page, locale}) => {
+  const {entries} = buildTimeline(locale);
+  const slice = entries.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
   const cellW = VIDEO.width / COLS;
   const cellH = VIDEO.height / ROWS;
   const scale = cellW / VIDEO.width;
@@ -22,7 +24,7 @@ export const ContactSheet: React.FC<ContactSheetProps> = ({page}) => {
     <AbsoluteFill style={{backgroundColor: '#000', display: 'flex', flexWrap: 'wrap'}}>
       {slice.map((e) => (
         <div
-          key={e.beat.id}
+          key={e.compositionId}
           style={{width: cellW, height: cellH, position: 'relative', overflow: 'hidden', outline: '1px solid #000'}}
         >
           <div
@@ -44,13 +46,12 @@ export const ContactSheet: React.FC<ContactSheetProps> = ({page}) => {
               right: 0,
               background: 'rgba(0,0,0,0.72)',
               color: C.text,
-              fontFamily: FONT.body,
-              fontWeight: 800,
+              fontFamily: FONT.mono,
               fontSize: 15,
               padding: '4px 8px',
             }}
           >
-            {String(e.index + 1).padStart(2, '0')} · {e.beat.id} · {timecode(e.from)} · {e.seconds.toFixed(1)}s
+            {String(e.index + 1).padStart(2, '0')} · {e.compositionId} · {timecode(e.from)} · {e.seconds.toFixed(1)}s
           </div>
         </div>
       ))}

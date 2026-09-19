@@ -4,51 +4,66 @@ import {CharacterSheet} from './dev/CharacterSheet';
 import {ContactSheet} from './dev/ContactSheet';
 import {loadFonts} from './fonts';
 import {Master} from './Master';
-import {TIMELINE, TOTAL_FRAMES} from './script/timeline';
+import {buildTimeline} from './script/timeline';
+import type {LocaleId} from './script/text';
 import {VIDEO} from './theme';
 
 loadFonts();
 
+const LOCALE_IDS: readonly LocaleId[] = ['en', 'de'];
+
 /**
- * Her sahne HEM master videonun içinde HEM de kendi başına bir kompozisyon.
- * Böylece istersen 8 dakikalık tek dosyayı, istersen tek tek klipleri
- * render alıp Adobe'da dizebilirsin.
+ * Her dil için: bir Master videosu + her sahnenin kendi kompozisyonu.
+ * İngilizce kimlikler öneksiz (Master, s01-welcome), Almanca "de-" önekli
+ * (de-Master, de-s01-welcome) — mevcut render komutları bozulmasın diye.
  */
 export const RemotionRoot: React.FC = () => (
   <>
-    <Composition
-      id="Master"
-      component={Master}
-      durationInFrames={TOTAL_FRAMES}
-      fps={VIDEO.fps}
-      width={VIDEO.width}
-      height={VIDEO.height}
-    />
+    {LOCALE_IDS.map((locale) => {
+      const {entries, totalFrames} = buildTimeline(locale);
+      const prefix = locale === 'en' ? '' : `${locale}-`;
 
-    {TIMELINE.map((e) => (
-      <Composition
-        key={e.beat.id}
-        id={e.beat.id}
-        component={() => <>{e.beat.node}</>}
-        durationInFrames={e.durationInFrames}
-        fps={VIDEO.fps}
-        width={VIDEO.width}
-        height={VIDEO.height}
-      />
-    ))}
+      return (
+        <React.Fragment key={locale}>
+          <Composition
+            id={`${prefix}Master`}
+            component={Master}
+            durationInFrames={totalFrames}
+            fps={VIDEO.fps}
+            width={VIDEO.width}
+            height={VIDEO.height}
+            defaultProps={{locale}}
+          />
 
-    {[0, 1, 2, 3].map((page) => (
-      <Composition
-        key={page}
-        id={`DevContactSheet${page + 1}`}
-        component={ContactSheet}
-        durationInFrames={60}
-        fps={VIDEO.fps}
-        width={VIDEO.width}
-        height={VIDEO.height}
-        defaultProps={{page}}
-      />
-    ))}
+          {entries.map((e) => (
+            <Composition
+              key={e.compositionId}
+              id={e.compositionId}
+              component={() => <>{e.beat.node}</>}
+              durationInFrames={e.durationInFrames}
+              fps={VIDEO.fps}
+              width={VIDEO.width}
+              height={VIDEO.height}
+            />
+          ))}
+        </React.Fragment>
+      );
+    })}
+
+    {LOCALE_IDS.flatMap((locale) =>
+      [0, 1, 2, 3].map((page) => (
+        <Composition
+          key={`${locale}-sheet-${page}`}
+          id={`Dev${locale === 'en' ? '' : 'De'}ContactSheet${page + 1}`}
+          component={ContactSheet}
+          durationInFrames={60}
+          fps={VIDEO.fps}
+          width={VIDEO.width}
+          height={VIDEO.height}
+          defaultProps={{page, locale}}
+        />
+      )),
+    )}
 
     <Composition
       id="DevCharacterSheet"

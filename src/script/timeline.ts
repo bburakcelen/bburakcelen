@@ -1,5 +1,6 @@
 import {VIDEO} from '../theme';
-import {BEATS, MIN_SECONDS, TARGET_SECONDS, weightOfBeat, type Beat} from './beats';
+import {MIN_SECONDS, buildBeats, weightOfBeat, type Beat} from './beats';
+import {LOCALES, localePrefix, type LocaleId} from './text';
 
 export type TimelineEntry = {
   readonly beat: Beat;
@@ -8,40 +9,47 @@ export type TimelineEntry = {
   readonly from: number;
   readonly durationInFrames: number;
   readonly seconds: number;
+  /** Bu dildeki benzersiz kompozisyon kimliği (ör. de-s01-welcome). */
+  readonly compositionId: string;
+};
+
+export type Timeline = {
+  readonly locale: LocaleId;
+  readonly entries: readonly TimelineEntry[];
+  readonly totalFrames: number;
+  readonly targetSeconds: number;
 };
 
 /**
  * Sahne sürelerini hesaplar.
  *
- * Mantık: her sahnenin payı, metnindeki kelime sayısıyla orantılı.
- * Toplam her zaman TARGET_SECONDS'a eşitlenir — yani ses kaydının süresini
+ * Her sahnenin payı, metnindeki kelime sayısıyla orantılı; toplam her zaman
+ * o dilin targetSeconds değerine eşitlenir. Yani ses kaydının süresini
  * yazdığın anda tüm sahneler kendini ona göre ayarlar.
  *
- * `seconds` verilmiş sahneler sabit kalır (komik zamanlama gibi yerlerde
- * orantı değil, elle ayar isteriz). MIN_SECONDS'ın altına düşen sahneler
+ * `seconds` verilmiş sahneler sabit kalır. MIN_SECONDS'ın altına düşenler
  * tabana sabitlenir ve kalan süre diğerleri arasında yeniden paylaştırılır.
  */
-const solveDurations = (): readonly number[] => {
-  const n = BEATS.length;
+const solveDurations = (beats: readonly Beat[], targetSeconds: number): readonly number[] => {
+  const n = beats.length;
   const seconds = new Array<number>(n).fill(0);
   const locked = new Array<boolean>(n).fill(false);
 
-  BEATS.forEach((b, i) => {
+  beats.forEach((b, i) => {
     if (b.seconds !== undefined) {
       seconds[i] = b.seconds;
       locked[i] = true;
     }
   });
 
-  // Kilitlenen sahneler arttıkça kalan bütçe daralır; birkaç turda dengelenir.
   for (let pass = 0; pass < 6; pass++) {
     const lockedTotal = seconds.reduce((sum, s, i) => (locked[i] ? sum + s : sum), 0);
-    const budget = Math.max(0, TARGET_SECONDS - lockedTotal);
-    const openWeight = BEATS.reduce((sum, b, i) => (locked[i] ? sum : sum + weightOfBeat(b)), 0);
+    const budget = Math.max(0, targetSeconds - lockedTotal);
+    const openWeight = beats.reduce((sum, b, i) => (locked[i] ? sum : sum + weightOfBeat(b)), 0);
     if (openWeight === 0) break;
 
     let changed = false;
-    BEATS.forEach((b, i) => {
+    beats.forEach((b, i) => {
       if (locked[i]) return;
       const share = (budget * weightOfBeat(b)) / openWeight;
       if (share < MIN_SECONDS) {
@@ -58,22 +66,35 @@ const solveDurations = (): readonly number[] => {
   return seconds;
 };
 
-const build = (): readonly TimelineEntry[] => {
-  const durations = solveDurations();
-  let cursor = 0;
+export const buildTimeline = (locale: LocaleId): Timeline => {
+  const L = LOCALES[locale];
+  const beats = buildBeats(L);
+  const durations = solveDurations(beats, L.targetSeconds);
+  const prefix = localePrefix(locale);
 
-  return BEATS.map((beat, index) => {
+  let cursor = 0;
+  const entries = beats.map((beat, index) => {
     const seconds = durations[index];
     const durationInFrames = Math.max(1, Math.round(seconds * VIDEO.fps));
-    const entry: TimelineEntry = {beat, index, from: cursor, durationInFrames, seconds};
+    const entry: TimelineEntry = {
+      beat,
+      index,
+      from: cursor,
+      durationInFrames,
+      seconds,
+      compositionId: `${prefix}${beat.id}`,
+    };
     cursor += durationInFrames;
     return entry;
   });
+
+  return {
+    locale,
+    entries,
+    totalFrames: entries.reduce((n, e) => n + e.durationInFrames, 0),
+    targetSeconds: L.targetSeconds,
+  };
 };
-
-export const TIMELINE = build();
-
-export const TOTAL_FRAMES = TIMELINE.reduce((n, e) => n + e.durationInFrames, 0);
 
 /** mm:ss biçiminde okunabilir zaman damgası. */
 export const timecode = (frames: number): string => {

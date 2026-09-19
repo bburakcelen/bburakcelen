@@ -3,6 +3,7 @@
  *   node scripts/render-all.mjs                      → her sahneden bir PNG
  *   node scripts/render-all.mjs --video              → her sahneden bir MP4 (1080p)
  *   node scripts/render-all.mjs --video --scale=2    → aynısı 4K olarak
+ *   node scripts/render-all.mjs --video --de         → Almanca sahneler
  *
  * Adobe'a alacağın klipleri üretmek için --video kullan.
  */
@@ -12,10 +13,12 @@ import {mkdirSync} from 'node:fs';
 const video = process.argv.includes('--video');
 const browser = process.env.REMOTION_BROWSER;
 // --scale=2 → 1080p kompozisyonu 4K olarak basar (büyütme değil, gerçek çözünürlük)
+const locale = process.argv.includes('--de') ? 'de' : 'en';
+const localePrefix = locale === 'en' ? '' : `${locale}-`;
 const scaleArg = process.argv.find((a) => a.startsWith('--scale='));
 const scale = scaleArg ? scaleArg.split('=')[1] : null;
 const suffix = scale && scale !== '1' ? `-${scale}x` : '';
-const outDir = video ? `out/clips${suffix}` : `out/frames${suffix}`;
+const outDir = video ? `out/clips-${locale}${suffix}` : `out/frames-${locale}${suffix}`;
 mkdirSync(outDir, {recursive: true});
 
 // Sahne kimliklerini Remotion'un kendi listesinden al.
@@ -27,7 +30,8 @@ const raw = execFileSync('npx', listArgs, {encoding: 'utf8'});
 const ids = raw
   .split('\n')
   .map((l) => l.trim().split(/\s+/)[0])
-  .filter((id) => /^s\d{2}-/.test(id));
+  // İngilizce sahneler öneksiz (s01-…), diğer diller önekli (de-s01-…)
+  .filter((id) => new RegExp(`^${localePrefix}s\\d{2}-`).test(id));
 
 console.log(`${ids.length} sahne bulundu → ${outDir}`);
 
