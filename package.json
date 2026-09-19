@@ -17,7 +17,9 @@
     "render:4k:de": "remotion render de-Master out/TwoSideBoys-de-4k.mp4 --scale=2",
     "render:prores": "remotion render Master out/TwoSideBoys.mov --codec=prores --prores-profile=4444",
     "render:clips": "node scripts/render-all.mjs --video",
+    "render:clips:de": "node scripts/render-all.mjs --video --de",
     "render:clips:4k": "node scripts/render-all.mjs --video --scale=2",
+    "render:clips:4k:de": "node scripts/render-all.mjs --video --de --scale=2",
     "render:frames": "node scripts/render-all.mjs",
     "typecheck": "tsc --noEmit",
     "upgrade": "remotion upgrade"
