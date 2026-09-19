@@ -45,6 +45,8 @@ export const FONT = {
   body: "'Barlow', system-ui, sans-serif",
   /** Sayılar, HUD okumaları, ticker'lar. */
   mono: "'JetBrains Mono', ui-monospace, monospace",
+  /** Kapak manşetleri — ağır, sıkışık, uzaktan bağıran. */
+  punch: "'Anton', 'Arial Black', system-ui, sans-serif",
 } as const;
 
 export const VIDEO = {

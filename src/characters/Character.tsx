@@ -36,12 +36,14 @@ export type CharacterProps = {
   readonly arms?: Partial<PoseSpec>;
   /** Heyecan seviyesi: salınım ve zıplamayı artırır. 0–1. */
   readonly energy?: number;
-  /** Kadraj. 'head' ve 'bust' duygusal anlarda yakın plan için. */
-  readonly crop?: 'full' | 'bust' | 'head';
+  /** Kadraj. 'face' kapak için: kafa ve omuzlar kareyi doldurur. */
+  readonly crop?: 'full' | 'bust' | 'head' | 'face';
   /** Kenar ışığı şiddeti. 0 = kapalı. */
   readonly rim?: number;
   /** Yüz hatlarını siler; geriye yalnız parlayan gözler kalır. Kapak için. */
   readonly faceless?: boolean;
+  /** Ayakların altındaki ışık havuzu. Aydınlık zeminde kapatılır. */
+  readonly ground?: boolean;
   readonly style?: React.CSSProperties;
 };
 
@@ -60,6 +62,7 @@ export const Character: React.FC<CharacterProps> = ({
   crop = 'full',
   rim = 1,
   faceless = false,
+  ground = true,
   style,
 }) => {
   const frame = useCurrentFrame();
@@ -87,6 +90,14 @@ export const Character: React.FC<CharacterProps> = ({
 
   // Kadraja göre viewBox — aynı rig, farklı çekim ölçeği
   const view = (() => {
+    // Kapak kadrajı: saçın biraz üstünden göğsün ortasına. Kutu hafif geniş,
+    // omuzlar kesilmesin ama kareyi de yüz doldursun.
+    if (crop === 'face') {
+      const top = sk.headCy - spec.headRy - 34;
+      const h = sk.shoulderY + spec.torsoLength * 0.46 - top;
+      const w = h * 0.94;
+      return {x: sk.centerX - w / 2, y: top, w, h};
+    }
     if (crop === 'head') {
       const top = sk.headCy - spec.headRy - 42;
       const h = spec.headRy * 2 + 86;
@@ -147,15 +158,19 @@ export const Character: React.FC<CharacterProps> = ({
         </defs>
 
         {/* Zemin teması — gölge değil, aksan renginde bir ışık havuzu */}
-        <ellipse
-          cx={sk.centerX}
-          cy={sk.groundY + 8}
-          rx={spec.shoulderWidth * 1.7}
-          ry={9}
-          fill={spec.accent}
-          opacity={0.2}
-        />
-        <ellipse cx={sk.centerX} cy={sk.groundY + 8} rx={spec.shoulderWidth * 0.9} ry={5} fill={spec.accent} opacity={0.32} />
+        {ground ? (
+          <>
+            <ellipse
+              cx={sk.centerX}
+              cy={sk.groundY + 8}
+              rx={spec.shoulderWidth * 1.7}
+              ry={9}
+              fill={spec.accent}
+              opacity={0.2}
+            />
+            <ellipse cx={sk.centerX} cy={sk.groundY + 8} rx={spec.shoulderWidth * 0.9} ry={5} fill={spec.accent} opacity={0.32} />
+          </>
+        ) : null}
 
         <Legs {...bodyProps} />
 

@@ -13,6 +13,9 @@ type Spec = {family: string; file: string; weight: number; subset: 'latin' | 'la
 
 // Dosya adları boşluksuz ('Chakra Petch' -> ChakraPetch), CSS adı boşluklu.
 const SPECS: Spec[] = [
+  // Anton — YouTube kapaklarının klasik ağır sıkışık fontu. Tek ağırlığı var.
+  {family: 'Anton', file: 'Anton', weight: 400, subset: 'latin'},
+  {family: 'Anton', file: 'Anton', weight: 400, subset: 'latin-ext'},
   {family: 'Chakra Petch', file: 'ChakraPetch', weight: 500, subset: 'latin'},
   {family: 'Chakra Petch', file: 'ChakraPetch', weight: 500, subset: 'latin-ext'},
   {family: 'Chakra Petch', file: 'ChakraPetch', weight: 600, subset: 'latin'},

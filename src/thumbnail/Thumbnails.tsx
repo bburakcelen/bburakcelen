@@ -1,266 +1,223 @@
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import {Character} from '../characters/Character';
-import {A, B, silhouetteOf} from '../characters/presets';
-import {Stage} from '../scenes/Stage';
-import {C, FONT, textGlow} from '../theme';
+import {A, B} from '../characters/presets';
+import {Arrow, Candles, Coin, HazardStrip, MarkerCircle, P, Punch, Sticker, Sunburst, Tag, Vignette} from './pop';
 
 /**
- * YouTube kapak görselleri — 1280×720.
+ * YouTube kapakları — 1280×720, ABD kripto/finans kanallarının diliyle.
  *
- * Tasarım kısıtı: mobil akışta yaklaşık 320 piksel genişlikte görünür. O
- * ölçekte okunması gereken tek şey manşet; onun için 2–4 kelime ve çok
- * büyük punto. Karakterler siluete çekildi ve yüz hatları silindi: geriye
- * yalnız parlayan gözler kalıyor, yani "henüz kim olduğumuzu bilmiyorsun"
- * fikrini yazı değil görselin kendisi taşıyor.
+ * O dilin üç kuralı var ve üçü de videonun kendi sinematik dilinin tersi:
+ *   1. Zemin parlak ve doygun. Karanlık kapak akışta geri çekilir.
+ *   2. Manşet iki-üç kelime, çok iri, kalın siyah konturlu. Bir kelime
+ *      sarı — göz önce oraya düşsün diye.
+ *   3. Yüzler büyük ve abartılı. Kripto kapaklarında yüz, grafikten de
+ *      rakamdan da daha çok tıklanır.
  *
- * Kadraj payı: Stage'in 'still' kamerası %2 yaklaşır, yani her kenardan
- * ~7–13 piksel kırpılır. Aşağıdaki boşluklar bunu hesaba katıyor.
- * handheld={0} ile salınım kapalı — kapak hangi kareden alınırsa alınsın aynı.
+ * Konu sinyali (mum grafiği, Bitcoin madeni, yeşil ok) zemine bırakıldı:
+ * kanalın ne anlattığı manşeti okumadan anlaşılsın.
+ *
+ * Karakterler siluet değil, tam renkli ve beyaz konturlu çıkartma olarak
+ * basılıyor — aydınlık zeminde siluet leke gibi duruyordu.
  */
 
-const AS = silhouetteOf(A);
-const BS = silhouetteOf(B);
-
-/** Siluetlerin ortak ayarı — üçünde de aynı görünsünler. */
-const FIGURE = {pose: 'handsDown', faceless: true, emotion: 'confident'} as const;
-
-const Kicker: React.FC<{readonly children: React.ReactNode; readonly color?: string}> = ({
-  children,
-  color = C.cyan,
-}) => (
-  <div
-    style={{
-      fontFamily: FONT.mono,
-      fontSize: 26,
-      fontWeight: 700,
-      letterSpacing: '0.46em',
-      textTransform: 'uppercase',
-      color,
-      textShadow: textGlow(color, 1),
-    }}
-  >
-    {children}
-  </div>
-);
-
-const Headline: React.FC<{
-  readonly children: React.ReactNode;
-  readonly size?: number;
-  readonly color?: string;
-}> = ({children, size = 128, color = C.text}) => (
-  <div
-    style={{
-      fontFamily: FONT.display,
-      fontWeight: 700,
-      fontSize: size,
-      lineHeight: 0.94,
-      letterSpacing: '-0.01em',
-      textTransform: 'uppercase',
-      color,
-      textShadow: `0 0 60px ${C.cyan}55, 0 6px 0 rgba(0,0,0,0.85), 0 10px 40px rgba(0,0,0,0.9)`,
-    }}
-  >
-    {children}
-  </div>
-);
-
-/** Neon çerçeveli vurgu şeridi. */
-const Bar: React.FC<{readonly children: React.ReactNode; readonly color?: string}> = ({
-  children,
-  color = C.amber,
-}) => (
-  <div
-    style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 14,
-      padding: '12px 26px',
-      border: `3px solid ${color}`,
-      background: `${color}1A`,
-      boxShadow: `0 0 34px ${color}66, inset 0 0 26px ${color}18`,
-      fontFamily: FONT.mono,
-      fontSize: 32,
-      fontWeight: 700,
-      letterSpacing: '0.08em',
-      color: C.text,
-      textShadow: textGlow(color, 0.6),
-    }}
-  >
-    {children}
-  </div>
-);
-
-/** Yazının altındaki karartma — ızgaranın üstünde manşet okunaklı kalsın. */
-const Scrim: React.FC<{readonly direction: string}> = ({direction}) => (
-  <AbsoluteFill style={{background: `linear-gradient(${direction})`}} />
-);
+const FACE = {
+  rim: 0,
+  ground: false,
+  pose: 'idle',
+  // Kollar gövdeye yapışınca omuzlar tek bir kutu gibi okunuyor; hafif
+  // açılınca siluet insan formuna dönüyor.
+  arms: {left: {upper: 19, fore: 12}, right: {upper: 19, fore: 12}},
+} as const;
 
 /* ---------------------------------------------------------------- A */
-/** Manşet solda, siluetler sağda. Üçü içinde en okunaklı düzen. */
+/** Manşet solda, iki yüz sağda. Klasik ve en güvenli düzen. */
 export const ThumbA: React.FC = () => (
-  <Stage mood="void" move="still" handheld={0} beams particles grid>
-    {/* Sıra önemli: karartma siluetlerin ALTINDA kalmalı, yoksa onları da soldurur */}
-    <Scrim direction="90deg, rgba(3,6,14,0.95) 0%, rgba(3,6,14,0.88) 34%, rgba(3,6,14,0) 58%" />
-
-    <AbsoluteFill style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-      <div style={{display: 'flex', alignItems: 'flex-end', gap: 2, paddingRight: 52, paddingBottom: 14}}>
-        <Character spec={AS} height={548} rim={2.2} {...FIGURE} />
-        <Character spec={BS} height={494} rim={2.2} {...FIGURE} />
-      </div>
-    </AbsoluteFill>
-
-    <AbsoluteFill style={{justifyContent: 'center', paddingLeft: 62}}>
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 22}}>
-        <Kicker>TwoSide Boys</Kicker>
-        <Headline size={142}>
-          Who are
-          <br />
-          we?
-        </Headline>
-        <div style={{marginTop: 8}}>
-          <Bar>1,000,000 SUBS → REVEAL</Bar>
-        </div>
-      </div>
-    </AbsoluteFill>
-  </Stage>
-);
-
-/* ---------------------------------------------------------------- B */
-/** Sayı baskın. Rakam tek başına merak uyandırır, siluetler onu çerçeveler. */
-export const ThumbB: React.FC = () => (
-  <Stage mood="void" move="still" handheld={0} beams particles grid>
+  <AbsoluteFill style={{background: 'linear-gradient(175deg, #0B4693 0%, #0C86BC 52%, #05294A 100%)'}}>
+    <Sunburst at="72% 44%" opacity={0.13} step={6} />
     <AbsoluteFill style={{justifyContent: 'flex-end'}}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-          padding: '0 40px 10px',
-        }}
-      >
-        <Character spec={AS} height={418} rim={2} {...FIGURE} />
-        <Character spec={BS} height={378} rim={2} {...FIGURE} />
-      </div>
+      <Candles height={330} opacity={0.42} />
     </AbsoluteFill>
+    <Vignette strength={0.58} />
 
-    <Scrim direction="180deg, rgba(3,6,14,0.9) 0%, rgba(3,6,14,0.55) 46%, rgba(3,6,14,0) 72%" />
-
-    <AbsoluteFill style={{alignItems: 'center', paddingTop: 46}}>
-      <Kicker>TwoSide Boys</Kicker>
-      <div
-        style={{
-          fontFamily: FONT.mono,
-          fontWeight: 700,
-          fontSize: 198,
-          lineHeight: 1,
-          letterSpacing: '-0.03em',
-          color: C.amber,
-          textShadow: `${textGlow(C.amber, 1.5)}, 0 8px 0 rgba(0,0,0,0.8)`,
-          marginTop: 22,
-        }}
-      >
-        1,000,000
-      </div>
-      <div
-        style={{
-          fontFamily: FONT.display,
-          fontWeight: 700,
-          fontSize: 64,
-          letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-          color: C.text,
-          textShadow: '0 4px 0 rgba(0,0,0,0.85), 0 0 50px rgba(34,230,255,0.45)',
-          marginTop: 26,
-        }}
-      >
-        Then you&apos;ll know us
-      </div>
-    </AbsoluteFill>
-  </Stage>
-);
-
-/* ---------------------------------------------------------------- C */
-/** Siluetler büyük ve ortada, aralarında dev soru işareti. En "fragman" olanı. */
-export const ThumbC: React.FC = () => (
-  <Stage mood="deep" move="still" handheld={0} beams particles grid={false}>
-    <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 104}}>
-      <div style={{display: 'flex', alignItems: 'flex-end', gap: 222}}>
-        <Character spec={AS} height={548} rim={2.4} {...FIGURE} />
-        <Character spec={BS} height={496} rim={2.4} {...FIGURE} />
-      </div>
-    </AbsoluteFill>
-
-    {/* Aradaki dev soru işareti — arkasında ışık havuzu, siluetlerden ayrışsın */}
-    <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', paddingBottom: 58}}>
-      <div
-        style={{
-          position: 'absolute',
-          width: 460,
-          height: 460,
-          borderRadius: '50%',
-          background:
-            'radial-gradient(circle, rgba(34,230,255,0.24) 0%, rgba(34,230,255,0.07) 44%, rgba(34,230,255,0) 70%)',
-        }}
-      />
-      <div
-        style={{
-          fontFamily: FONT.display,
-          fontWeight: 700,
-          fontSize: 316,
-          lineHeight: 1,
-          color: C.cyan,
-          textShadow: `${textGlow(C.cyan, 2)}, 0 10px 0 rgba(0,0,0,0.7)`,
-        }}
-      >
-        ?
-      </div>
-    </AbsoluteFill>
-
-    <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-start', paddingTop: 40}}>
-      <Kicker>TwoSide Boys</Kicker>
-    </AbsoluteFill>
-
-    <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 28}}>
-      <Bar color={C.amber}>WE REVEAL AT 1,000,000</Bar>
-    </AbsoluteFill>
-  </Stage>
-);
-
-/* ---------------------------------------------------------------- D */
-/**
- * Yakın plan. YouTube akışında en çok tıklanan kadraj yüz büyüklüğünde
- * olandır; yüz yerine iki parlayan bakış koyunca aynı etki gizemle
- * birleşiyor. Manşet üç satıra bölündü, böylece 320 pikselde bile her
- * kelime iri kalıyor.
- */
-export const ThumbD: React.FC = () => (
-  <Stage mood="void" move="still" handheld={0} beams particles grid={false}>
-    <Scrim direction="90deg, rgba(3,6,14,0.96) 0%, rgba(3,6,14,0.9) 30%, rgba(3,6,14,0) 54%" />
+    {/* Yüzlerin arkasında ışık — çıkartma zeminden kopsun */}
+    <AbsoluteFill
+      style={{
+        background: 'radial-gradient(circle 330px at 68% 46%, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%)',
+      }}
+    />
 
     <AbsoluteFill style={{alignItems: 'flex-end', justifyContent: 'flex-end'}}>
-      <div style={{display: 'flex', alignItems: 'flex-end', paddingRight: 44}}>
-        <Character spec={AS} crop="bust" height={476} rim={2.4} {...FIGURE} />
-        {/* Negatif kenar boşluğu: kadrajlar hafif üst üste binsin, ikisi tek grup okunsun */}
-        <Character spec={BS} crop="bust" height={432} rim={2.4} style={{marginLeft: -38}} {...FIGURE} />
+      <div style={{display: 'flex', alignItems: 'flex-end', paddingRight: 12}}>
+        <Sticker width={9}>
+          <Character spec={A} crop="face" height={524} emotion="excited" {...FACE} />
+        </Sticker>
+        <Sticker width={9} style={{marginLeft: -58}}>
+          <Character spec={B} crop="face" height={476} emotion="confident" {...FACE} />
+        </Sticker>
       </div>
     </AbsoluteFill>
 
-    <AbsoluteFill style={{justifyContent: 'center', paddingLeft: 60}}>
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 20}}>
-        <Kicker>TwoSide Boys</Kicker>
-        <Headline size={158}>
+    <AbsoluteFill style={{justifyContent: 'center', paddingLeft: 46}}>
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 24}}>
+        <Punch size={142}>
           Who
           <br />
           are
           <br />
-          we?
-        </Headline>
+          <span style={{color: P.yellow}}>we?</span>
+        </Punch>
+        <Tag size={36}>Face reveal at 1M</Tag>
+      </div>
+    </AbsoluteFill>
+  </AbsoluteFill>
+);
+
+/* ---------------------------------------------------------------- B */
+/** Rakam baskın. Kanalı hiç tanımayan biri için en net kanca. */
+export const ThumbB: React.FC = () => (
+  <AbsoluteFill style={{background: 'linear-gradient(180deg, #06381F 0%, #0B9B57 58%, #032414 100%)'}}>
+    <Sunburst at="50% 40%" opacity={0.12} step={6} />
+    <AbsoluteFill style={{justifyContent: 'flex-end'}}>
+      <Candles height={380} opacity={0.62} />
+    </AbsoluteFill>
+    <Vignette strength={0.6} />
+
+    <AbsoluteFill style={{justifyContent: 'flex-end'}}>
+      <div style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 26px'}}>
+        <Sticker width={8}>
+          <Character spec={A} crop="face" height={332} emotion="shocked" {...FACE} />
+        </Sticker>
+        <Sticker width={8}>
+          <Character spec={B} crop="face" height={306} emotion="excited" {...FACE} />
+        </Sticker>
       </div>
     </AbsoluteFill>
 
-    <AbsoluteFill style={{alignItems: 'flex-start', justifyContent: 'flex-end', paddingLeft: 60, paddingBottom: 34}}>
-      <Bar>REVEAL AT 1,000,000</Bar>
+    <AbsoluteFill style={{alignItems: 'center', paddingTop: 84}}>
+      <div style={{position: 'relative', display: 'inline-block'}}>
+        <Punch size={206} color={P.yellow} align="center">
+          1,000,000
+        </Punch>
+        {/* Rakamın üstüne sonradan çizilmiş gibi duran işaret. Elips yazıdan
+            belirgin biçimde büyük olmalı, yoksa üstünü çizmiş gibi duruyor. */}
+        <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
+          <MarkerCircle width={1100} height={306} rotate={-1.5} thickness={11} />
+        </div>
+      </div>
+      <div style={{marginTop: 42}}>
+        <Punch size={78} align="center">
+          Then we <span style={{color: P.yellow}}>reveal</span>
+        </Punch>
+      </div>
     </AbsoluteFill>
-  </Stage>
+  </AbsoluteFill>
+);
+
+/* ---------------------------------------------------------------- C */
+/** İki dev yüz. Akışta yüz büyüklüğü, her şeyden çok tıklanır. */
+export const ThumbC: React.FC = () => (
+  <AbsoluteFill style={{background: 'radial-gradient(ellipse 90% 86% at 50% 40%, #FF5A1F 0%, #C11C00 54%, #6B0A00 100%)'}}>
+    <Sunburst at="50% 44%" opacity={0.16} step={5} />
+    <Vignette strength={0.5} />
+
+    <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 100}}>
+      <div style={{display: 'flex', alignItems: 'flex-end'}}>
+        <Sticker width={10}>
+          <Character spec={A} crop="face" height={452} emotion="shocked" {...FACE} />
+        </Sticker>
+        <Sticker width={10} style={{marginLeft: -46}}>
+          <Character spec={B} crop="face" height={418} emotion="excited" {...FACE} />
+        </Sticker>
+      </div>
+    </AbsoluteFill>
+
+    <AbsoluteFill style={{alignItems: 'center', paddingTop: 22}}>
+      <Punch size={162} color={P.yellow} align="center">
+        Face reveal
+      </Punch>
+    </AbsoluteFill>
+
+    <AbsoluteFill style={{justifyContent: 'flex-end'}}>
+      <div style={{display: 'flex', justifyContent: 'center', paddingBottom: 26}}>
+        <Tag size={46}>At 1,000,000 subs</Tag>
+      </div>
+      <HazardStrip height={24} />
+    </AbsoluteFill>
+  </AbsoluteFill>
+);
+
+/* ---------------------------------------------------------------- D */
+/**
+ * Çapraz bölünmüş zemin — kanalın adı da işi de bu: iki taraf.
+ * Solda airdrop tarafı, sağda futures/spot tarafı.
+ */
+export const ThumbD: React.FC = () => (
+  <AbsoluteFill style={{background: '#08111F'}}>
+    <AbsoluteFill
+      style={{
+        background: 'linear-gradient(160deg, #0B57B0 0%, #12B4D8 100%)',
+        clipPath: 'polygon(0 0, 57% 0, 45% 100%, 0 100%)',
+      }}
+    />
+    <AbsoluteFill
+      style={{
+        background: 'linear-gradient(160deg, #C56200 0%, #FFA61F 100%)',
+        clipPath: 'polygon(57% 0, 100% 0, 100% 100%, 45% 100%)',
+      }}
+    />
+    {/* Bölme çizgisi — sarı kenarlı siyah bant */}
+    <AbsoluteFill
+      style={{background: P.yellow, clipPath: 'polygon(54.4% 0, 59.6% 0, 47.6% 100%, 42.4% 100%)'}}
+    />
+    <AbsoluteFill
+      style={{background: P.black, clipPath: 'polygon(55.4% 0, 58.6% 0, 46.6% 100%, 43.4% 100%)'}}
+    />
+
+    <Sunburst at="50% 40%" opacity={0.1} step={7} />
+    <Vignette strength={0.5} />
+
+    {/* Bitcoin madeni — kanalın konusu manşet okunmadan anlaşılsın */}
+    <div style={{position: 'absolute', left: 34, top: 42}}>
+      <Coin size={150} rotate={-14} />
+    </div>
+    <div style={{position: 'absolute', right: 40, top: 48}}>
+      <Arrow size={124} color={P.green} rotate={-45} />
+    </div>
+
+    <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-end'}}>
+      <div style={{display: 'flex', alignItems: 'flex-end', gap: 88, paddingBottom: 152}}>
+        <Sticker width={9}>
+          <Character spec={A} crop="face" height={398} emotion="excited" {...FACE} />
+        </Sticker>
+        <Sticker width={9}>
+          <Character spec={B} crop="face" height={362} emotion="confident" {...FACE} />
+        </Sticker>
+      </div>
+    </AbsoluteFill>
+
+    {/* Alt bant — manşet her zeminin üstünde aynı okunurluğu korusun */}
+    <AbsoluteFill style={{justifyContent: 'flex-end'}}>
+      <div
+        style={{
+          background: 'rgba(6,8,14,0.93)',
+          borderTop: `7px solid ${P.yellow}`,
+          padding: '18px 0 26px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Punch size={104} align="center" stroke={8}>
+          Who are <span style={{color: P.yellow}}>we?</span>
+        </Punch>
+      </div>
+    </AbsoluteFill>
+
+    <div style={{position: 'absolute', left: '50%', top: 26, transform: 'translateX(-50%)'}}>
+      <Tag size={38} skew={0}>
+        1,000,000 subs
+      </Tag>
+    </div>
+  </AbsoluteFill>
 );
