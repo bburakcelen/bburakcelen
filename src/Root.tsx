@@ -6,6 +6,7 @@ import {loadFonts} from './fonts';
 import {Master} from './Master';
 import {ThumbA, ThumbB, ThumbC, ThumbD} from './thumbnail/Thumbnails';
 import {FigurePreview} from './thumbnail/Preview';
+import {ThumbOverlay} from './thumbnail/Overlay';
 import {buildTimeline} from './script/timeline';
 import type {LocaleId} from './script/text';
 import {VIDEO} from './theme';
@@ -66,6 +67,16 @@ export const RemotionRoot: React.FC = () => (
         />
       )),
     )}
+
+    {/* Hazır kapağın üstüne binen şeffaf yazı katmanı */}
+    <Composition
+      id="ThumbOverlay"
+      component={ThumbOverlay}
+      durationInFrames={1}
+      fps={VIDEO.fps}
+      width={1672}
+      height={941}
+    />
 
     <Composition
       id="FigurePreview"
