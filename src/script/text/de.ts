@@ -7,11 +7,10 @@ import type {Locale} from './en';
 
 export const de: Locale = {
   /**
-   * DİKKAT: Almanca ses kaydı henüz yok; bu bir tahmin (1.179 kelime,
-   * ~160 kelime/dk). Kaydı aldıktan sonra gerçek süreyi buraya yaz —
-   * sahneler kendiliğinden yeniden dağılır.
+   * Almanca ses kaydının gerçek süresi: 7:07.81 (427,81 sn).
+   * Konuşma 425,8 saniyede bitiyor, sonrası sessizlik.
    */
-  targetSeconds: 442,
+  targetSeconds: 428,
 
   s01: {
     script: "Hey Leute, willkommen bei TwoSide Boys.",

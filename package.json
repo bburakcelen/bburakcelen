@@ -23,7 +23,8 @@
     "render:frames": "node scripts/render-all.mjs",
     "typecheck": "tsc --noEmit",
     "upgrade": "remotion upgrade",
-    "thumbs": "remotion still ThumbA out/ThumbA.png && remotion still ThumbB out/ThumbB.png && remotion still ThumbC out/ThumbC.png && remotion still ThumbD out/ThumbD.png"
+    "thumbs": "remotion still ThumbA out/ThumbA.png && remotion still ThumbB out/ThumbB.png && remotion still ThumbC out/ThumbC.png && remotion still ThumbD out/ThumbD.png",
+    "srt": "python3 scripts/make-srt.py"
   },
   "dependencies": {
     "@remotion/animation-utils": "4.0.526",
